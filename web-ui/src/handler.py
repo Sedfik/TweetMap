@@ -1,12 +1,18 @@
 import sys 
 import http.server
 import urllib.parse
-
-print(sys.version)
-
+import tweetsprocess as tp
 
 class TweetHandler(http.server.BaseHTTPRequestHandler):
     
     def do_GET(self):
-        #parsed_path = urllib.parse.urlparse(self.path)
-        return
+        print(self.path)
+        
+        if(self.path == "/users"):
+            self.send_response(200)
+            self.send_header('Content-type','text/html')
+            self.end_headers()
+            # Send the html message
+            self.wfile.write(str.encode("<h1>Hello World !</h1>"))
+
+        return 1

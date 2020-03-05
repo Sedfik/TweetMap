@@ -1,12 +1,14 @@
 
 <!DOCTYPE html>
-<head>
-    <title>Mon programme</title>
-</head>
-<body>
-    <form action="/index.py" method="post">
-        <input type="text" name="name" value="Votre nom" />
-        <input type="submit" name="send" value="Envoyer information au serveur">
-    </form> 
-</body>
+<html>
+
+    <head>
+        <title>Mon programme</title>
+        <script type="text/javascript" src="process.js"></script> 
+    </head>
+
+    <body>
+        <input type="text" name="tweet" value="Tweet with" />
+        <button onclick="loadDoc()" value="send"> send </button>
+    </body>
 </html>

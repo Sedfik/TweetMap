@@ -3,12 +3,31 @@
 <html>
 
     <head>
-        <title>Mon programme</title>
+        <title>Tweet Stat</title>
         <script type="text/javascript" src="process.js"></script> 
     </head>
 
     <body>
-        <input type="text" name="tweet" value="Tweet with" />
-        <button onclick="loadDoc()" value="send"> send </button>
+        <h1> Projet M1 ISD </h1>
+
+        <div id="form">
+            <h2> Formulaire </h2>
+            Rechercher un tweet contenant : 
+            <input type="text" name="tweet" ></input>
+            <button onclick="loadDoc()" value="send"> rechercher </button>
+           
+        </div>
+
+        
+        <div id="divNbTweets">
+            Nombre de tweets : 
+            <div id="nbTweets">
+
+            </div>
+        </div>
+        <br>
+        <div id="brutData">
+
+        </div>
     </body>
 </html>

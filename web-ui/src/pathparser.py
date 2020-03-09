@@ -10,7 +10,7 @@ class Path():
 
     def __init__(self, path):
         self.__path = path
-        self.__resource = path.split("?")[0]
+        self.__resource = path.split("?")[0][1:]
         try:
             self.__parameters = dict((k,v) for k, v in [tuple(p.split("=")) for p in path.split("?")[1].split("&")])
         except:
@@ -31,7 +31,7 @@ class Path():
 # Scenario nominal
 path = Path("/index.html?param1=21&param2=4")
 assert(path.path == "/index.html?param1=21&param2=4")
-assert(path.resource == "/index.html")
+assert(path.resource == "index.html")
 assert(path.parameters == dict({'param1': '21', 'param2': '4'}))
 
 # Cas speciaux

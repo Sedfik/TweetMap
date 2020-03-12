@@ -4,12 +4,12 @@ import os
 
 def get_tweets():
     print(os.path)
-    tweets = pd.read_csv("web-ui/src/resources/tweets.csv")
+    tweets = pd.read_csv("web-ui/resources/tweets.csv")
     return str(tweets)
 
 def filter(parameters):
     print(os.path)
-    tweets = pd.read_csv("web-ui/src/resources/tweets.csv")
+    tweets = pd.read_csv("web-ui/resources/tweets.csv")
     filtered = tweets
     #for (name, param) in parameters:
     filtered = filtered[(filtered['user_id']=='159054323')]

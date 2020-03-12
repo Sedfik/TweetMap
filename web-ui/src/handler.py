@@ -1,7 +1,6 @@
 import sys 
 import os
 import http.server
-import urllib.parse
 import pathparser as pp
 import tweetsprocess as tp
 

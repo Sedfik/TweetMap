@@ -2,7 +2,7 @@ import http.server
 import socketserver
 import os
 import handler
-PORT = 8800
+PORT = 8801
 
 resources = os.path.join(os.path.dirname(__file__), '../resources')
 os.chdir(resources)

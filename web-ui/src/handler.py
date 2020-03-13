@@ -24,14 +24,14 @@ class TweetHandler(http.server.SimpleHTTPRequestHandler):
                 self.wfile.write(bytes(tweet_filtered, 'utf-8'))
 
             else: 
-                tweet_filtered = tp.filter(received_path.parameters)
+                tweet_filtered = tp.get_tweets_query(received_path.parameters)
                 self.send_response(200)
                 self.end_headers()
                 self.wfile.write(bytes(tweet_filtered, 'utf-8'))
             
         
         # Si la ressource demandee est une page et est bien accessible
-        if(received_path.resource in os.listdir("../resources")+[""]):
+        if(received_path.resource in os.listdir(".")+[""]):
             print("-- open file --")
             file_name = received_path.resource
 

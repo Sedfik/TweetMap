@@ -4,13 +4,15 @@
 ### Côté serveur
 - [x] Création serveur python 
 - [x] Serveur capable de servir des fichiers / ressources
-- [ ] Récupération d'une requête avec des paramètres en query
-- [ ] Traitement d'une requête 
+- [x] Récupération d'une requête avec des paramètres en query
+- [x] Traitement d'une requête
+- [ ] Vérification des champs envoyé par l'utilisateur 
 - [ ] Gestion de sessions 
 ### Côté client 
 - [x] Première interface
 - [x] Requête en AJAX simple
 - [ ] Premier formulaire de filtrage
+- [ ] Afficher les résultat en brut
 ### Features
 - [x] Déploiement sous docker
 - [ ] 
@@ -33,4 +35,4 @@ docker build -t tweet-map .
 Puis simplement lancer le conteneur en 'mapant' le port utilisé par le conteneur avec votre port physique choisi.
 ```
 docker run -d -p 8800:8800 tweet-map 
-```
+``` 

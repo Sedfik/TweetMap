@@ -36,3 +36,12 @@ Puis simplement lancer le conteneur en 'mapant' le port utilisé par le conteneu
 ```
 docker run -d -p 8800:8800 tweet-map 
 ``` 
+## Utilisation
+Il est possible d'effectuer une requête au serveur sans passer par l'interface web.
+Pour cela, il suffit d'envoyer une requête GET sur la ressource tweets du serveur:
+
+```
+curl http://localhost:8800/tweets?text=dog
+```
+
+Cette requête va retourner l'ensemble des tweets contenant le mot "dog" dans leur contenu (le tweets).

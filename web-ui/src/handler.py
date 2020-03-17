@@ -31,15 +31,16 @@ class TweetHandler(http.server.SimpleHTTPRequestHandler):
             
         
         # Si la ressource demandee est une page et est bien accessible
-        if(received_path.resource in os.listdir(".")+[""]):
+        if(received_path.resource in os.listdir(".")+["","/"]):
             print("-- open file --")
             file_name = received_path.resource
 
-            if(file_name == ""):
+            if(file_name == "" or "/"):
                 file_name = "index.html"
             # On essaye d'ouvrir la ressource si c'est un fichier 
             try:
                 #On lit le fichier
+                print("try to open",file_name )
                 file_to_open = open(file_name).read()
                 self.send_response(200)
             

@@ -13,6 +13,5 @@ with socketserver.TCPServer(("", PORT), Handler) as httpd:
     print("serving at port", PORT)
     try:
         httpd.serve_forever()
-    except KeyboardInterrupt():
-        pass    
-    httpd.server_close()
+    except KeyboardInterrupt():    
+        httpd.server_close()

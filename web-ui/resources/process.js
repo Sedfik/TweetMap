@@ -18,8 +18,11 @@ function loadDoc() {
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
-        console.log(this.responseText);
-        document.getElementById("nbTweets").innerHTML =  this.responseText.length
+        let res = JSON.parse(this.responseText);
+
+        console.log(res);
+        document.getElementById("nbTweets").innerHTML =  this.responseText.length;
+        document.getElementById("brutData").innerHTML = JSON.stringify(res);
       }
     };
     xhttp.open("GET", "tweets?"+query, true);

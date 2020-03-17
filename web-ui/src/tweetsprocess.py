@@ -1,12 +1,11 @@
 import pandas as pd
 import re
 import os
-#import config
 
 def get_tweets():
     os.chdir(os.path.join(os.path.dirname(__file__), '../..'))
     tweets = pd.read_csv("web-ui/resources/tweets.csv")
-    return str(tweets)
+    return tweets.to_json
 
 # Retourne la liste des tweets suivants les parametres
 def get_tweets_query(parameters):
@@ -16,7 +15,7 @@ def get_tweets_query(parameters):
     for p in parameters:
         tweets = filter(tweets,(p,parameters[p]))
 
-    return str(tweets)
+    return str(tweets.to_json())
 
 
 # Retourne le data_frame des lignes qui match avec le parametre.

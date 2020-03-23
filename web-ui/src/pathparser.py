@@ -28,13 +28,14 @@ class Path():
     def parameters(self):
         return self.__parameters
 
-# Scenario nominal
-path = Path("/index.html?param1=21&param2=4")
-assert(path.path == "/index.html?param1=21&param2=4")
-assert(path.resource == "index.html")
-assert(path.parameters == dict({'param1': '21', 'param2': '4'}))
+def test():
+    # Scenario nominal
+    path = Path("/index.html?param1=21&param2=4")
+    assert(path.path == "/index.html?param1=21&param2=4")
+    assert(path.resource == "index.html")
+    assert(path.parameters == dict({'param1': '21', 'param2': '4'}))
 
-# Cas speciaux
-assert(Path("/index?a").parameters == None)
-assert(Path("/index").parameters == None)
-assert(Path("/index?a=").parameters == dict({'a':''}))
+    # Cas speciaux
+    assert(Path("/index?a").parameters == None)
+    assert(Path("/index").parameters == None)
+    assert(Path("/index?a=").parameters == dict({'a':''}))

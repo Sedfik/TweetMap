@@ -13,7 +13,7 @@ class Path():
     
     def __init__(self, path):
         try: # On verifie la bonne formulation de la requete
-            re.search(path_regex,path)
+            re.search(self.path_regex,path)
         except:
             raise Exception("Bad request")
 

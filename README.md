@@ -6,16 +6,18 @@
 - [x] Serveur capable de servir des fichiers / ressources
 - [x] Récupération d'une requête avec des paramètres en query
 - [x] Traitement d'une requête
+- [x] Automatisation des test via Travis
+- [ ] Réfractor -> fonction de filtre prenant en parametre le fichier de tweets ?
 - [ ] Vérification des champs envoyé par l'utilisateur 
-- [ ] Gestion de sessions 
+- [ ] Gestion de sessions
 ### Côté client 
 - [x] Première interface
 - [x] Requête en AJAX simple
-- [ ] Premier formulaire de filtrage
-- [ ] Afficher les résultat en brut
+- [x] Premier formulaire de filtrage
+- [x] Afficher les résultat en brut
 ### Features
 - [x] Déploiement sous docker
-- [ ] 
+- [x] Utilisation de Travis 
 ### Roadmap
 - [ ] (Client) Génération dynamique des champs du formulaire suivant le fichier de tweet
 - [ ] (feature) Connexion au SSO de projet 

@@ -6,9 +6,17 @@ Classe representant un Path. Un Path est l'agregation de :
 l'attribut parametre est == None si aucuns parametres.
 Les attributs sont privés
 """
+import re
 class Path():
-
+    # Path de type : /resource?param1=value1&param2=value2....
+    path_regex = re.compile(r"^\/([a-z]|[A-Z]|[0-1])+(\?([a-z]|[A-Z]|[0-1])+\=([a-z]|[A-Z]|[0-1])+(\&([a-z]|[A-Z]|[0-1])+\=([a-z]|[A-Z]|[0-1])+)*)?$")
+    
     def __init__(self, path):
+        try: # On verifie la bonne formulation de la requete
+            re.search(path_regex,path)
+        except:
+            raise Exception("Bad request")
+
         self.__path = path
         self.__resource = path.split("?")[0][1:]
         try:
@@ -27,15 +35,3 @@ class Path():
     @property
     def parameters(self):
         return self.__parameters
-
-def test():
-    # Scenario nominal
-    path = Path("/index.html?param1=21&param2=4")
-    assert(path.path == "/index.html?param1=21&param2=4")
-    assert(path.resource == "index.html")
-    assert(path.parameters == dict({'param1': '21', 'param2': '4'}))
-
-    # Cas speciaux
-    assert(Path("/index?a").parameters == None)
-    assert(Path("/index").parameters == None)
-    assert(Path("/index?a=").parameters == dict({'a':''}))

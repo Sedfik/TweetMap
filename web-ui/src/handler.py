@@ -6,24 +6,30 @@ import tweetsprocess as tp
 
 class TweetHandler(http.server.SimpleHTTPRequestHandler):
     
+    # Reception d'un GET
     def do_GET(self):
         
-        received_path = pp.Path(self.path)
+        # Recuperation du path et gestion d'une mauvais requete
+        try:
+            received_path = pp.Path(self.path)
+        except:
+            self.send_response(400)
+            self.end_headers()
+            self.wfile.write(bytes("Bad Request", 'utf-8'))
+
         print(received_path.resource)
         
         # Si on veut recuperer la ressource "tweets"
         if(received_path.resource == "tweets"):
             print("-- get tweets -- ")
-            # On recupere les potientiels parametres
             
-
             if (received_path.parameters == None): # Si aucun parametres
                 tweet_filtered = tp.get_tweets() # On retourne le tout
                 self.send_response(200)
                 self.end_headers()
                 self.wfile.write(bytes(tweet_filtered, 'utf-8'))
 
-            else: 
+            else: # Si il y a des parametres
                 tweet_filtered = tp.get_tweets_query(received_path.parameters)
                 self.send_response(200)
                 self.end_headers()

@@ -1,13 +1,17 @@
+import re
+
 """
 Classe representant un Path. Un Path est l'agregation de :
     - D'une ressource 
     - De parametres (facultatif)
 
 l'attribut parametre est == None si aucuns parametres.
-Les attributs sont privés
+Les attributs sont prives
 """
-import re
+
+
 class Path():
+
     # Path de type : /resource?param1=value1&param2=value2....
     path_regex = re.compile(r"^\/([a-z]|[A-Z]|[0-1])+(\?([a-z]|[A-Z]|[0-1])+\=([a-z]|[A-Z]|[0-1])+(\&([a-z]|[A-Z]|[0-1])+\=([a-z]|[A-Z]|[0-1])+)*)?$")
     

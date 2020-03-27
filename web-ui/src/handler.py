@@ -45,7 +45,6 @@ class TweetHandler(http.server.SimpleHTTPRequestHandler):
             file_name = received_path.resource
             
             print("ressource =", file_name)
-            print("test:",file_name == "" or "/")
             if(file_name == "" or file_name == "/"):
                 file_name = "index.html"
             # On essaye d'ouvrir la ressource si c'est un fichier 

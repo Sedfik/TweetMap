@@ -21,7 +21,7 @@ def get_tweets(data_frame):
 def get_tweets_query(data_frame,parameters):
     for p in parameters:
         data_frame = filter(data_frame,(p,parameters[p]))
-    return str(data_frame.to_json())
+    return str(data_frame.to_json(orient="records"))
 
 
 # Retourne le data_frame des lignes qui match avec le parametre.

@@ -1,17 +1,14 @@
 import pandas as pd
 import re
 import os
+import config
 
 # Lire le fichier donne en tant que dataframe depuis le chemin absolu du projet
 def get_file_dataframe(path):
-    cur_path = os.curdir
-    os.chdir(os.path.join(os.path.dirname(__file__), '../..'))
     try:
         return pd.read_csv(path)
     except FileNotFoundError as exception:
         print(exception) 
-    finally:
-        os.chdir(cur_path)
 
 def get_tweets(data_frame):
     if data_frame == None:
@@ -63,5 +60,5 @@ def new_get_tweets_query(data_frame,parameters):
 """
 if __name__ == "__main__":
     #print(get_tweets(get_file_dataframe("web-ui/resources/twets.csv")))
-    print(new_filter(get_file_dataframe("web-ui/resources/tweets.csv"),""))
+    print(new_filter(get_file_dataframe(config.ROOT_DIR + "web-ui/resources/tweets.csv"),""))
     #print(new_get_tweets_query(get_file_dataframe("web-ui/resources/tweets.csv"), dict({'text': 'dog'} )))

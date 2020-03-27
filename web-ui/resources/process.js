@@ -12,7 +12,7 @@ Dans la query on récupère tous les elements du doc avec id=nomColonne
 function loadDoc() {
   console.log(tweetText);
   // TODO Gestion des inputs frauduleuses de l'utilisateur (caracteres speciaux...) 
-  let query = "text=" + tweetText.value
+  let query = "text=" + tweetText.value;
   
 
     var xhttp = new XMLHttpRequest();
@@ -27,4 +27,4 @@ function loadDoc() {
     };
     xhttp.open("GET", "tweets?"+query, true);
     xhttp.send();
-  }
+}

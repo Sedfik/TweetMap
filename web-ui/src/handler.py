@@ -5,11 +5,13 @@ import config
 import pathparser as pp
 import tweetsprocess as tp
 
+TWEET_FILE_TO_SERVE = os.path.join(config.ROOT_DIR,"web-ui/resources/tweets.csv")
+
 class TweetHandler(http.server.SimpleHTTPRequestHandler):
     
     # Reception d'un GET
     def do_GET(self):
-        TWEET_FILE_TO_SERVE = config.ROOT_DIR + "web_ui/resources/tweets.csv"
+        print(TWEET_FILE_TO_SERVE)
         file_dataframe = tp.get_file_dataframe(TWEET_FILE_TO_SERVE)
         
         # Recuperation du path et gestion d'une mauvais requete

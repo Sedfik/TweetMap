@@ -4,4 +4,4 @@ python:
 install:
     - pip install -r requirements.txt
 script:
-    - python web-ui/src/pytest.py || python3 web-ui/src/pytest.py 
+    - python -m unittest web-ui/src || python3 -m unittest web-ui/src 

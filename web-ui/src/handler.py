@@ -1,8 +1,10 @@
 import sys 
 import os
 import http.server
-import config
-import pathparser as pp
+import logging as log
+
+import config # Configuration projet
+import pathparser as pp 
 import tweetsprocess as tp
 
 TWEET_FILE_TO_SERVE = os.path.join(config.ROOT_DIR,"web-ui/resources/tweets.csv")
@@ -11,22 +13,25 @@ class TweetHandler(http.server.SimpleHTTPRequestHandler):
     
     # Reception d'un GET
     def do_GET(self):
-        print(TWEET_FILE_TO_SERVE)
-        file_dataframe = tp.get_file_dataframe(TWEET_FILE_TO_SERVE)
+
+        log.debug("Tweet file:"+str(TWEET_FILE_TO_SERVE))
         
         # Recuperation du path et gestion d'une mauvais requete
         try:
+            log.debug("path:" + self.path)
             received_path = pp.Path(self.path)
         except:
             self.send_response(400)
             self.end_headers()
             self.wfile.write(bytes("Bad Request", 'utf-8'))
 
-        print(received_path.resource)
-        
+        log.debug("queried resource:" + received_path.resource)
+
         # Si on veut recuperer la ressource "tweets"
         if(received_path.resource == "tweets"):
-            print("-- get tweets -- ")
+            log.info("get tweets")
+            
+            file_dataframe = tp.get_file_dataframe(TWEET_FILE_TO_SERVE)
             
             if (received_path.parameters == None): # Si aucun parametres
                 tweet_filtered = tp.get_tweets(file_dataframe) # On retourne le tout

@@ -1,3 +1,134 @@
-div#resultats {
+*{
+    font-family: 'Work Sans', sans-serif;
+}
+
+#resultats {
     float: right;
+}
+
+td {
+    border-style: solid;
+    border-width: 1px;
+    border-color: gray;
+}
+
+#list.table {
+    width: 30%;
+}
+
+#tweetList {
+    overflow: auto;
+    height: 500px;
+    position: relative;
+    top: 50%;
+    border-style: solid;
+    border-width: 1px;
+    width: 100%;
+}
+
+#formulaire{
+    overflow: auto;
+    border-style: solid;
+    border-width: 1px;
+    width: 15%;
+    height: 90%;
+    border-color: rgba(29,161,242,1);
+}
+
+#brutData{
+    position: relative;
+    left: 0%;
+}
+label, a{
+    cursor: pointer;
+    user-select: none;
+    text-decoration: none;
+    display: inline-block;
+    color: inherit;
+    transition: border 0.2s;
+    border-bottom: 5px solid rgba(rgba(29,161,242,1), 0.2);
+    padding: 3px 2px;
+}
+
+.layout{
+    display: grid;
+    height: 600px;
+    width: 70%;
+    overflow: hidden;
+    grid-template-rows: 50px 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
+    float: right;
+    border-style: solid;
+    border-color: rgba(29,161,242,1);
+    border-width: 1px;
+}
+
+#frame #formulaire{
+    position: absolute;
+    top: 20%;
+    left: 15px;
+    height: 200px;
+}
+
+#frame .layout{
+    position: absolute;
+    top:20%;
+    right: 15px;
+}
+
+input[type="radio"]{
+    display: none;
+}
+
+label.nav{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-bottom: 2px solid rgba(29,161,242,1);
+    background: #ecf0f1;
+    user-select: none;
+    padding-left: 0;
+    
+}
+
+.page{
+    grid-column-start: 1;
+    grid-row-start: 2;
+    grid-column-end: span 3;
+    padding: 0px 20px;
+    display: flex;
+    align-items: center;
+}
+
+.page-contents > *{
+    overflow: auto;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.2s, transform 0.2s;
+    @for $c from 1 through 20{
+        &:nth-child(#{$c}){
+            transition-delay: 0.2s + ($c * 0.2s);
+        }
+    }
+}
+  
+input[type="radio"] + .page{
+    transition: transform 0.2s;
+    transform: translateX(100%);
+}
+  
+input[type="radio"]:checked + .page{
+    transform: translateX(0%);
+}
+.page-contents > *{
+    opacity: 1;
+    transform: translateY(0px);
+}
+
+  
+.page-contents{
+    max-width: 100%;
+    width: 500px;
+    margin: 0 auto;
 }

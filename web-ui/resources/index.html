@@ -8,33 +8,76 @@
     </head>
 
     <body onload="load()">
-        <h1> Projet M1 ISD </h1>
 
-        <div id="form">
-            <h2> Formulaire </h2>
-            Rechercher un tweet contenant : <br>
-            <input type="text" id="tweetText" />
+        <h1 style="text-align: center;"> Tweet Map - Projet M1 ISD </h1>
+        
+        <!-- Frame contenant le formulaire ainsi que les resultats -->
+        <div id="frame">
             
-
-            <br><br>
-            <button onclick="loadDoc()" value="send"> rechercher </button>
-        </div>
-
-        <div id="resultats">    
-            
-            <div id="divNbTweets">
-                Nombre de tweets : 
-                <div id="nbTweets">
-
-                </div>
-            </div>
-            <br>
-            <div id="brutData" >
-
-            </div>
-            <div id="list">
+            <!-- Formulaire de filtre des tweets -->
+            <div id="formulaire">
+                <h2> Formulaire </h2>
+                Rechercher un tweet contenant : <br>
+                <input type="text" id="tweetText" />
                 
+
+                <br><br>
+                <button onclick="loadDoc()" value="send"> rechercher </button>
             </div>
+            <div id="resultats">    
+                
+                <div id="divNbTweets">
+                    Nombre de tweets : 
+                    <div id="nbTweets">
+
+                    </div>
+                </div>
+                <br>
+               
+               
+            </div>
+
+            <!-- Layout contenant le resultat sous differentes formes -->
+            <div class="layout">
+
+                <!-- List des tweets  -->
+                <input name="nav" type="radio" class="nav list-radio" id="list" checked="checked"/>
+                <div class="page list-page">
+                    <div class="page-contents">
+                        <div id="tweetList">
+                           
+                        </div>
+                    </div>
+                </div>
+                <label class="nav" for="list">
+                    <h1> List </h1>
+                </label>
+                
+                <!-- Tableau des donnees brut (liste des tweets avec tous les champs possible) -->
+                <input name="nav" type="radio" class="brutData-radio" id="brutData" />
+                <div class="page brutData-page">
+                    <div class="page-contents">
+                        <div id="brutData">
+                            No data
+                        </div> 
+                    </div>
+                </div>
+                <label class="nav" for="brutData">
+                    <h1>Brut data</h1>    
+                </label>
+
+                <!-- A ajouter, exemple type d'un nouvel onglet -->
+                <input name="nav" type="radio" class="more-radio" id="more"/>
+                <div class="page more-page">
+                    <div class="page-contents">
+                        Lorem ipsum dolor sit amet
+                    </div>
+                </div>
+                <label class="nav" for="more">
+                    <h1>more</h1>
+                </label>
+            </div>
+            
         </div>
     </body>
 </html>

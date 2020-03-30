@@ -7,14 +7,17 @@
 - [x] Récupération d'une requête avec des paramètres en query
 - [x] Traitement d'une requête
 - [x] Automatisation des test via Travis
+- [ ] Gestion de sessions multiple (multithreading) - 2 POINTS
+- [ ] Absence de TIMEOUT .... - 2 POINTS
 - [ ] Réfractor -> fonction de filtre prenant en parametre le fichier de tweets ?
 - [ ] Vérification des champs envoyé par l'utilisateur 
-- [ ] Gestion de sessions
+
 ### Côté client 
 - [x] Première interface
 - [x] Requête en AJAX simple
 - [x] Premier formulaire de filtrage
 - [x] Afficher les résultat en brut
+- [ ] Recherches avancées - 2 POINTS
 ### Features
 - [x] Déploiement sous docker
 - [x] Utilisation de Travis 
@@ -46,4 +49,4 @@ Pour cela, il suffit d'envoyer une requête GET sur la ressource tweets du serve
 curl http://localhost:8800/tweets?text=dog
 ```
 
-Cette requête va retourner l'ensemble des tweets contenant le mot "dog" dans leur contenu (le tweets).
+Cette requête va retourner l'ensemble des tweets contenant le mot "dog" dans leur contenu (le tweets). 

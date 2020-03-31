@@ -17,7 +17,11 @@ def get_tweets(data_frame):
         return data_frame.to_json
     
 
+"""
 # Retourne la liste des tweets suivants les parametres
+# parametre : data_frame -> le jeu de donnees sur lequel appliquer les filtres 
+# parametre : parameters -> la liste des parametres sous forme: {'params1': ['value1'],'params1': ['value1']}
+"""
 def get_tweets_query(data_frame,parameters):
     for p in parameters:
         data_frame = filter(data_frame,(p,parameters[p]))
@@ -40,9 +44,9 @@ def filter(data_frame, parameter):
 
 
 
-def new_filter(data_frame, parameter):
-    #patern = re.compile("dog")
-    return data_frame[data_frame["text"].str.contains(r"dog")]["text"]
+def new_filter(data_frame, parameter, value):
+    patern = re.compile(value)
+    return data_frame[data_frame[parameter].str.contains(patern)]
     #return data_frame[ (patern.search(data_frame["text"]) ) ]
     #data_frame["text"].apply(lambda x: patern.search(x),1)
     #filter(lambda x: True if x == "null")
@@ -50,8 +54,8 @@ def new_filter(data_frame, parameter):
 
 def new_get_tweets_query(data_frame,parameters):
     for p in parameters:
-        data_frame = new_filter(data_frame,(p,parameters[p]))
-    return str(data_frame.to_json())
+        data_frame = new_filter(data_frame,p,parameters[p])
+    return str(data_frame.to_json(orient="records"))
 
 
 """
@@ -60,5 +64,6 @@ def new_get_tweets_query(data_frame,parameters):
 """
 if __name__ == "__main__":
     #print(get_tweets(get_file_dataframe("web-ui/resources/twets.csv")))
-    print(new_filter(get_file_dataframe(config.ROOT_DIR + "web-ui/resources/tweets.csv"),""))
-    #print(new_get_tweets_query(get_file_dataframe("web-ui/resources/tweets.csv"), dict({'text': 'dog'} )))
+    #print(new_filter(get_file_dataframe(config.ROOT_DIR + "/web-ui/test/test_tweets.csv"),""))
+    #print(filter(get_file_dataframe(config.ROOT_DIR + "web-ui/test/test_tweets.csv"),("text","dog")))
+    print(new_get_tweets_query(get_file_dataframe(config.ROOT_DIR + "/web-ui/test/test_tweets.csv"), dict({'text': 'dog'} )))

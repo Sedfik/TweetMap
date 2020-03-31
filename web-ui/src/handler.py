@@ -1,6 +1,7 @@
 import sys 
 import os
 import http.server
+from urllib.parse import urlparse, parse_qs
 import logging as log
 
 import config # Configuration projet
@@ -16,45 +17,51 @@ class TweetHandler(http.server.SimpleHTTPRequestHandler):
 
         log.debug("Tweet file:"+str(TWEET_FILE_TO_SERVE))
         
+        parsed_url = urlparse(self.path)
         # Recuperation du path et gestion d'une mauvais requete
         try:
-            log.debug("path:" + self.path)
-            received_path = pp.Path(self.path)
+            #path = pp.Path(self.path)
+            path = parsed_url.path
+            log.debug("path:" + path)
         except:
             self.send_response(400)
             self.end_headers()
             self.wfile.write(bytes("Bad Request", 'utf-8'))
 
-        log.debug("queried resource:" + received_path.resource)
+        #log.debug("queried resource:" + path.resource)
 
         # Si on veut recuperer la ressource "tweets"
-        if(received_path.resource == "tweets"):
+        if(path == "/tweets"):
             log.info("get tweets")
             
             file_dataframe = tp.get_file_dataframe(TWEET_FILE_TO_SERVE)
             
-            if (received_path.parameters == None): # Si aucun parametres
+            if (parsed_url.query == ''): # Si aucun parametres
                 tweet_filtered = tp.get_tweets(file_dataframe) # On retourne le tout
                 self.send_response(200)
                 self.end_headers()
                 self.wfile.write(bytes(tweet_filtered, 'utf-8'))
 
-            else: # Si il y a des parametres
-                tweet_filtered = tp.get_tweets_query(file_dataframe,received_path.parameters)
+            else: # Il y a des parametres
+                tweet_filtered = tp.get_tweets_query(file_dataframe, parse_qs(parsed_url.query))
+
                 self.send_response(200)
                 self.end_headers()
                 self.wfile.write(bytes(tweet_filtered, 'utf-8'))
             
-        
+
+        # Ressource est un fichier ? : /index.html => index.html 
+        file_name = path[1:] # On retire le slash
+
         # Si la ressource demandee est une page et est bien accessible
-        if(received_path.resource in os.listdir(".")+["","/"]):
+        if(file_name in os.listdir(".")+["","/"]):
             print("-- open file --")
-            file_name = received_path.resource
             
             print("ressource =", file_name)
             if(file_name == "" or file_name == "/"):
                 file_name = "index.html"
             # On essaye d'ouvrir la ressource si c'est un fichier 
+            
             try:
                 #On lit le fichier
                 print("try to open",file_name)
@@ -69,5 +76,4 @@ class TweetHandler(http.server.SimpleHTTPRequestHandler):
             self.wfile.write(bytes(file_to_open, 'utf-8'))
             print(self.requestline)
 
-        
         return 1

@@ -27,13 +27,12 @@ function loadDoc() {
         let listDiv = document.getElementById("tweetList");
         console.log("list:" + listDiv);
       
-        //clearDiv(listDiv);
+        clearDiv(listDiv);
 
         // Creation du tableau contenant les tweets
         let table = document.createElement("table");
         
         listDiv.appendChild(table)
-
         // Fonction de remplissage du tableau
         res.forEach(e => {
           console.log("Ajout des elements");

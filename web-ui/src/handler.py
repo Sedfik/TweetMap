@@ -43,6 +43,7 @@ class TweetHandler(http.server.SimpleHTTPRequestHandler):
                 self.wfile.write(bytes(tweet_filtered, 'utf-8'))
 
             else: # Il y a des parametres
+                print("query params",parse_qs(parsed_url.query))
                 tweet_filtered = tp.get_tweets_query(file_dataframe, parse_qs(parsed_url.query))
 
                 self.send_response(200)

@@ -21,7 +21,7 @@ def get_tweets(data_frame):
 # Retourne la liste des tweets suivants les parametres
 # parametre : data_frame -> le jeu de donnees sur lequel appliquer les filtres 
 # parametre : parameters -> la liste des parametres sous forme: {'params1': ['value1'],'params1': ['value1']}
-"""
+
 def get_tweets_query(data_frame,parameters):
     for p in parameters:
         data_frame = filter(data_frame,(p,parameters[p]))
@@ -41,10 +41,10 @@ def filter(data_frame, parameter):
     
     return data_frame[finded]
 
+"""
 
 
-
-def new_filter(data_frame, parameter, value):
+def filter(data_frame, parameter, value):
     patern = re.compile(value)
     return data_frame[data_frame[parameter].str.contains(patern)]
     #return data_frame[ (patern.search(data_frame["text"]) ) ]
@@ -52,9 +52,10 @@ def new_filter(data_frame, parameter, value):
     #filter(lambda x: True if x == "null")
     #return data_frame[ data_frame [ re.search( str(parameter[1]), str(parameter[0])) ] ]
 
-def new_get_tweets_query(data_frame,parameters):
+def get_tweets_query(data_frame,parameters):
     for p in parameters:
-        data_frame = new_filter(data_frame,p,parameters[p])
+        for px in parameters[p]:
+            data_frame = filter(data_frame,p,px)
     return str(data_frame.to_json(orient="records"))
 
 
@@ -66,4 +67,4 @@ if __name__ == "__main__":
     #print(get_tweets(get_file_dataframe("web-ui/resources/twets.csv")))
     #print(new_filter(get_file_dataframe(config.ROOT_DIR + "/web-ui/test/test_tweets.csv"),""))
     #print(filter(get_file_dataframe(config.ROOT_DIR + "web-ui/test/test_tweets.csv"),("text","dog")))
-    print(new_get_tweets_query(get_file_dataframe(config.ROOT_DIR + "/web-ui/test/test_tweets.csv"), dict({'text': 'dog'} )))
+    print(get_tweets_query(get_file_dataframe(config.ROOT_DIR + "/web-ui/test/test_tweets.csv"), dict({'text': ['dog']} )))

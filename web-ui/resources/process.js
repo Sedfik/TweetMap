@@ -106,12 +106,11 @@ function brutData(jsonData) {
  * 
  * @param {*} div la div a clear 
  */
-// TODO A tester / verifier
 function clearDiv(div) {
   console.log("clear div: "+div);
   try {
     while(div.lastElementChild){
-      div.removeChild(listDiv.lastElementChild);
+      div.removeChild(div.lastElementChild);
   } 
   } catch (error) {
     console.error(error);

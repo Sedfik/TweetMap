@@ -168,13 +168,13 @@ function hist(jsonData,columnName,width,height) {
     console.log("draw rect(",x,",",yOrigin + rectMaxHeight-number,",",rectWidth,",",number  ,")");
     
     // On ecrit le nombre d'occurences
-    context.fillText(dict[key],x+(rectWidth/2),yOrigin + rectMaxHeight-number-10);
+    context.fillText(dict[key],x,yOrigin + rectMaxHeight-number-5);
     
     // / / Nom de la clef ecrit suivant une rotation 
     // On sauvegarde le contexte actuel
     context.save();
     // On decale le context mettant les origines en bas du graph et on laisse de la place pour ecrire la clef
-    context.translate(x+(rectWidth/2), yOrigin + rectMaxHeight+ key.length +20); // key.lenght bizare -> TODO a tester
+    context.translate(x+(rectWidth/2), yOrigin + rectMaxHeight+ key.length +40); // key.lenght bizare -> TODO a tester
     console.log("length",key,":",key.length);
     // On tourne
     context.rotate(-Math.PI/2);

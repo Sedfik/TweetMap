@@ -5,7 +5,6 @@ from urllib.parse import urlparse, parse_qs
 import logging as log
 
 import config # Configuration projet
-import pathparser as pp 
 import tweetsprocess as tp
 
 TWEET_FILE_TO_SERVE = os.path.join(config.ROOT_DIR,"web-ui/resources/tweets.csv")

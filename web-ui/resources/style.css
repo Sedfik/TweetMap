@@ -68,7 +68,7 @@ label, a{
     position: absolute;
     top: 20%;
     left: 15px;
-    height: 200px;
+    height: auto;
 }
 
 #frame .layout{

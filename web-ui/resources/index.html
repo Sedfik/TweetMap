@@ -19,8 +19,12 @@
                 <h2> Formulaire </h2>
                 Rechercher un tweet contenant : <br>
                 <input type="text" id="tweetText" />
-                
-
+                <br><br>
+                Nom d'utilisateur : <br>
+                <input type="text" id="userName"/>
+                <br><br>
+                Hashtag : <br>
+                <input type="text" id="hashtag"/>
                 <br><br>
                 <button onclick="loadDoc()" value="send"> rechercher </button>
             </div>
@@ -70,14 +74,16 @@
                 <input name="nav" type="radio" class="more-radio" id="more"/>
                 <div class="page more-page">
                     <div class="page-contents">
-                        Lorem ipsum dolor sit amet
+                        <div id="canvas">
+                
+                        </div>
                     </div>
                 </div>
                 <label class="nav" for="more">
                     <h1>more</h1>
                 </label>
             </div>
-            
+                       
         </div>
     </body>
 </html>

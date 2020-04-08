@@ -3,19 +3,19 @@ import os
 import http.server
 from urllib.parse import urlparse, parse_qs
 import logging as log
-
+import threading
 import config # Configuration projet
 import tweetsprocess as tp
 
 TWEET_FILE_TO_SERVE = os.path.join(config.ROOT_DIR,"web-ui/resources/tweets.csv")
 
 class TweetHandler(http.server.SimpleHTTPRequestHandler):
+
     
     # Reception d'un GET
     def do_GET(self):
-
-        log.debug("Tweet file:"+str(TWEET_FILE_TO_SERVE))
         
+        log.debug("Tweet file:"+str(TWEET_FILE_TO_SERVE))        
         parsed_url = urlparse(self.path)
         # Recuperation du path et gestion d'une mauvais requete
         try:
@@ -43,6 +43,8 @@ class TweetHandler(http.server.SimpleHTTPRequestHandler):
 
             else: # Il y a des parametres
                 print("query params",parse_qs(parsed_url.query))
+                #show which thread is treating the request
+                print(threading.currentThread().getName())
                 tweet_filtered = tp.get_tweets_query(file_dataframe, parse_qs(parsed_url.query))
 
                 self.send_response(200)

@@ -19,13 +19,10 @@ class TweetHandler(http.server.SimpleHTTPRequestHandler):
         parsed_url = urlparse(self.path)
         # Recuperation du path et gestion d'une mauvais requete
         try:
-            #path = pp.Path(self.path)
             path = parsed_url.path
             log.debug("path:" + path)
         except:
-            self.send_response(400)
-            self.end_headers()
-            self.wfile.write(bytes("Bad Request", 'utf-8'))
+            self.send_error(400,'Bad Request')
 
         #log.debug("queried resource:" + path.resource)
 
@@ -37,43 +34,69 @@ class TweetHandler(http.server.SimpleHTTPRequestHandler):
             
             if (parsed_url.query == ''): # Si aucun parametres
                 tweet_filtered = tp.get_tweets(file_dataframe) # On retourne le tout
-                self.send_response(200)
-                self.end_headers()
-                self.wfile.write(bytes(tweet_filtered, 'utf-8'))
-
+                
             else: # Il y a des parametres
                 print("query params",parse_qs(parsed_url.query))
-                tweet_filtered = tp.get_tweets_query(file_dataframe, parse_qs(parsed_url.query))
-
-                self.send_response(200)
-                self.end_headers()
-                self.wfile.write(bytes(tweet_filtered, 'utf-8'))
+                tweet_filtered = tp.get_tweets_query(file_dataframe, parse_qs(parsed_url.query))    
             
+            # Le resultat sera du json
+            self.send_response(200)
+            self.send_header('Content-type','application/json')
+            self.end_headers()
+            self.wfile.write(bytes(tweet_filtered, 'utf-8'))
 
         # Ressource est un fichier ? : /index.html => index.html 
         file_name = path[1:] # On retire le slash
 
         # Si la ressource demandee est une page et est bien accessible
         if(file_name in os.listdir(".")+["","/"]):
-            print("-- open file --")
+            print("MIME type")
             
-            print("ressource =", file_name)
-            if(file_name == "" or file_name == "/"):
+            if(file_name == ""): # Si on demande /
                 file_name = "index.html"
-            # On essaye d'ouvrir la ressource si c'est un fichier 
             
-            try:
-                #On lit le fichier
-                print("try to open",file_name)
-                file_to_open = open(file_name).read()
-                self.send_response(200)
-            
-            except:  # Sinon not found 404
-                file_to_open = "File not found"
-                self.send_response(404)
-            
-            self.end_headers()
-            self.wfile.write(bytes(file_to_open, 'utf-8'))
-            print(self.requestline)
+    
+			#Check the file extension required and
+			#set the right mime type
 
+            sendReply = False
+            if file_name.endswith(".html"):
+                mimetype='text/html'
+                sendReply = True
+            if file_name.endswith(".jpg"):
+                mimetype='image/jpg'
+                sendReply = True
+            if file_name.endswith(".png"):
+                mimetype='image/png'
+                sendReply = True
+            if file_name.endswith(".gif"):
+                mimetype='image/gif'
+                sendReply = True
+            if file_name.endswith(".js"):
+                mimetype='application/javascript'
+                sendReply = True
+            if file_name.endswith(".css"):
+                mimetype='text/css'
+                sendReply = True    
+
+            if sendReply:
+
+                print("ressource =", file_name)
+
+                # On essaye d'ouvrir la ressource si c'est un fichier 
+                
+                try:
+                    #On lit le fichier
+                    print("try to open",file_name)
+                    file_to_open = open(file_name,'rb')
+                    self.send_response(200)
+                            
+                
+                except:  # Sinon not found 404
+                    self.send_error(404,'File Not Found %s' %file_name)       
+
+                self.send_header('Content-type',mimetype)
+                self.end_headers()
+                self.wfile.write(file_to_open.read())
+                file_to_open.close()
         return 1

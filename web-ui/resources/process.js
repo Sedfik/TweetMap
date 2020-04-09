@@ -63,6 +63,12 @@ function loadDoc() {
       }
     };
     xhttp.open("GET", "tweets?"+query, true);
+    xhttp.timeout = 500
+    xhttp.ontimeout = () => {
+    console.error('Timeout!!')
+    alert("Request Timeout")
+};
+
     xhttp.send();
 }
 

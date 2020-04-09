@@ -71,7 +71,7 @@ label, a{
     width: 70%;
     overflow: hidden;
     grid-template-rows: 50px 1fr;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
     float: right;
     border-style: solid;
     border-color: rgba(29,161,242,1);

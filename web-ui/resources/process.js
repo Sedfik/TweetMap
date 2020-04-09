@@ -1,6 +1,7 @@
 function load() {
   var tweetText = document.getElementById("tweetText");
 }
+var mapInitialized = false;
 /*
 //TODO 
 On recupere l'ensemble des champs du fichier. 
@@ -15,7 +16,7 @@ function loadDoc() {
   let query = "text=" + tweetText.value;
   
 
-    var xhttp = new XMLHttpRequest();
+    let xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
         let res = JSON.parse(this.responseText);
@@ -54,20 +55,28 @@ function loadDoc() {
           
         });        
         // TODO a debuger: Affichage simultane de brutDataDiv et listDiv
-        let brutDiv = document.getElementById("brutData");
         
         //brutDiv.appendChild();
         let canvasDiv = document.getElementById("canvas");
         clearDiv(canvasDiv);
         canvasDiv.appendChild(hist(res,"place_country",600,500));
+
+        let mapDiv = document.getElementById("world_map");
+
+        clearDiv(mapDiv);
+        console.log("div dim",mapDiv.clientWidth);
+        let mapCanva = drawMap(res,1000,500);
+        
+        mapDiv.appendChild(mapCanva);
       }
     };
     xhttp.open("GET", "tweets?"+query, true);
+    
     xhttp.timeout = 500
     xhttp.ontimeout = () => {
-    console.error('Timeout!!')
-    alert("Request Timeout")
-};
+      console.error('Timeout!!')
+      alert("Request Timeout")
+    };
 
     xhttp.send();
 }
@@ -124,7 +133,6 @@ function hist(jsonData,columnName,width,height) {
   canva.width = width;
   canva.height = height;
   let context = canva.getContext("2d");
-  console.log("context",context);
   
   // Creation d'un dictionnaire qui pour chaque pays donne le nombre de tweets -> { "France": "12" }
   let dict = {}
@@ -216,3 +224,62 @@ function clearDiv(div) {
 }
 
 function size_dict(d){c=0; for (i in d) ++c; return c}
+
+/**
+ * Retourne un canvas contenant la carte avec la position de chaque tweets
+ * @param {*} jsonData  les donnees 
+ * @param {*} width     la largeur du canvas
+ * @param {*} height    la hauteur du canvas
+ */
+function drawMap(jsonData, width, height) {
+  // Initialisation du canvas
+  let canva = document.createElement("canvas");
+  canva.width = width;
+  canva.height = height;
+  let context = canva.getContext("2d");
+
+  // Ajout de l'image au canvas
+  image = new Image();
+  image.src = 'world_map.png';
+
+  image.onload = function () { // Une fois l'image chargee, on l'affiche et fait le traitement
+    console.log("drawImage")
+    context.drawImage(image,0,0,image.width,image.height,0,0,canva.width,canva.height); 
+  
+    // Pour chaque tweets
+    jsonData.forEach(element => {
+
+      console.log(element['longitude'],":",element['latitude']);
+      
+      // Calcul des coordonnes x,y suivant la longitude et latitude ainsi que la taille du canvas
+      let coor = mercatorXY(canva.width,canva.height,element['longitude'],element['latitude']);
+      
+      // coor = [x,y]
+      console.log(coor);
+
+      // On dessine un cercle
+      context.beginPath();
+      context.arc(coor[0],coor[1],2,0, 2 * Math.PI);
+      context.stroke();
+    });
+  }
+  return canva;   
+}
+
+/**
+ * Fonction de mercator retournant les coordonnees XY pour un couple longitude latitude donne ainsi que les dimensions du canvas
+ * @param {*} width 
+ * @param {*} height 
+ * @param {*} longitude 
+ * @param {*} latitude 
+ */
+function mercatorXY(width,height,longitude,latitude) {
+  let x;
+  let radLatitude = latitude * Math.PI /180; // Transformation du degree en radian
+  let y;
+
+  x = width * ((longitude + 180)/360);
+  y = (height/2) - ( (width/(2*Math.PI)) * ( Math.log( Math.tan( Math.PI/4 + radLatitude/2 ))));
+  
+  return [x,y];
+}

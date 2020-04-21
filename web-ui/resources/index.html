@@ -19,7 +19,12 @@
             <div id="formulaire">
                 <h2> Formulaire </h2>
                 Rechercher un tweet contenant : <br>
-                <input type="text" id="tweetText" />
+
+                <div id="tweet-text">
+                     <input type="text" id="tweetText1" />
+                     <input type="button" value="+" onClick="addInput('tweet-text');">
+                </div>
+
                 <br><br>
                 Nom d'utilisateur : <br>
                 <input type="text" id="userName"/>

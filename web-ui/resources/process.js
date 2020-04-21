@@ -1,5 +1,5 @@
 function load() {
-  var tweetText = document.getElementById("tweetText");
+  var tweetText1 = document.getElementById("tweetText1");
 }
 var mapInitialized = false;
 /*
@@ -11,9 +11,21 @@ Dans la query on récupère tous les elements du doc avec id=nomColonne
 */
 
 function loadDoc() {
-  console.log(tweetText);
+
+  console.log(tweetText1);
   // TODO Gestion des inputs frauduleuses de l'utilisateur (caracteres speciaux...) 
-  let query = "text=" + tweetText.value;
+  var content = "";
+  for (var i = 1; i <= counter; i++) {
+    var tweetText = document.getElementById("tweetText"+i);
+    content= content + tweetText.value;
+    if (i < counter) {
+      content+=","
+    }
+  }
+
+  alert(content);
+  
+  let query = "text=" + content;
   
 
     let xhttp = new XMLHttpRequest();
@@ -282,4 +294,28 @@ function mercatorXY(width,height,longitude,latitude) {
   y = (height/2) - ( (width/(2*Math.PI)) * ( Math.log( Math.tan( Math.PI/4 + radLatitude/2 ))));
   
   return [x,y];
+}
+
+var counter = 1;
+var limit = 3;
+function addInput(divName){
+     if (counter == limit)  {
+          alert("You have reached the limit of adding " + counter + " inputs");
+     }
+     else {
+          var newdiv = document.createElement('div');
+          counter++
+          id = "tweetText"+counter
+          newdiv.innerHTML = " <div> <br><input type='text' id='"+id+"' name='myInputs[]'> <input type='button' value='-' onClick='removeInput();'> </div>";
+          document.getElementById(divName).appendChild(newdiv);
+
+
+     }
+}
+
+function removeInput(){
+  var remove = document.getElementById('tweet-text');
+  remove.removeChild(remove.lastElementChild);
+  counter--;
+
 }

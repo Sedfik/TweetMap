@@ -43,39 +43,19 @@ function loadDoc() {
         console.log("list:" + listDiv);
       
         clearDiv(listDiv);
+        console.error(listDiv.innerHTML);
+        listDiv.appendChild(tweetList(res))
 
-        // Creation du tableau contenant les tweets
-        let table = document.createElement("table");
-        
-        listDiv.appendChild(table)
-        // Fonction de remplissage du tableau
-        res.forEach(e => {
-          console.log("Ajout des elements");
-          let tr = document.createElement("tr");
-          table.appendChild(tr)
-
-          let td = document.createElement("td")
-
-          let userName = e["user_name"];
-          let text = e["text"];
-
-          td.innerHTML += "<strong>" + userName + "</strong>"
-                          + "</br>"
-                          + text ;
-          
-          tr.appendChild(td)
-          
-        });        
         // TODO a debuger: Affichage simultane de brutDataDiv et listDiv
-        
         //brutDiv.appendChild();
+        
         let histDiv = document.getElementById("hist");
         clearDiv(histDiv);
         histDiv.appendChild(hist(res,"place_country",600,500));
 
         let mapDiv = document.getElementById("world_map");
-
         clearDiv(mapDiv);
+        
         console.log("div dim",mapDiv.clientWidth);
         let mapCanva = drawMap(res,1000,500);
         
@@ -92,6 +72,32 @@ function loadDoc() {
 
     xhttp.send();
 }
+
+function tweetList(jsonData) {
+   // Creation du tableau contenant les tweets
+   let table = document.createElement("table");
+        
+   // Fonction de remplissage du tableau
+   jsonData.forEach(e => {
+     console.log("Ajout des elements");
+     let tr = document.createElement("tr");
+     table.appendChild(tr)
+
+     let td = document.createElement("td")
+
+     let userName = e["user_name"];
+     let text = e["text"];
+
+     td.innerHTML += "<strong>" + userName + "</strong>"
+                     + "</br>"
+                     + text ;
+     
+     tr.appendChild(td)
+
+   });
+   return table;
+}
+
 
 
 /**

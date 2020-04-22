@@ -1,3 +1,4 @@
+  
 *{
     font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
     box-sizing: border-box;
@@ -24,23 +25,17 @@ td {
 
 .page-contents{
     margin: 0 auto;
-}
-/*TODO : Regler le probleme d'affichage des resultats*/
-#tweetList,
- #world_map,
- #hist {
-    overflow: auto;
-    padding: 10px 400px 20px;
+    overflow-y: auto;
+    
 }
 
-table{
-    overflow: auto;
-    z-index: 2;
+#tweetList {
+    padding: 10px 40px 20px;
+    height: 1000px;
 }
 
 #world_map {
     overflow: auto;
-    padding: 10px 400px 20px;
     /*height: 500px;
     position: relative;
     top: 50%;
@@ -109,8 +104,7 @@ input[type="text"]{
 }
 input[type=text]:focus {
     border: 3px solid #555;
-}
-
+  }
 label, a{
     cursor: pointer;
     user-select: none;
@@ -129,6 +123,7 @@ label:hover{
 input[type="radio"]{
     display: none;
 }
+
 
 label.nav{
     display: flex;
@@ -185,3 +180,4 @@ footer {
     left: 0;
     z-index: 1;
 }
+

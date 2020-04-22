@@ -142,38 +142,28 @@ label.nav{
     
 }
 
+
+.page-contents > *{
+    opacity: 1;
+    transform: translateY(0px);
+}
+
 .page{
     grid-column-start: 1;
     grid-row-start: 2;
     grid-column-end: span 4;
     padding: 0px 20px;
     display: flex;
-    align-items: center;
-}
-
-.page-contents > *{
-    overflow: auto;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.2s, transform 0.2s;
-    @for $c from 1 through 20{
-        &:nth-child(#{$c}){
-            transition-delay: 0.2s + ($c * 0.2s);
-        }
-    }
+    /*align-items: center;*/
 }
 
 input[type="radio"] + .page{
-    transition: transform 0.2s;
+    transition: transform 0.5s;
     transform: translateX(100%);
 }
   
 input[type="radio"]:checked + .page{
     transform: translateX(0%);
-}
-.page-contents > *{
-    opacity: 1;
-    transform: translateY(0px);
 }
 
 footer {

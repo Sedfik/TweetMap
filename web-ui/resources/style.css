@@ -1,5 +1,12 @@
 *{
     font-family: 'Work Sans', sans-serif;
+    box-sizing: border-box;
+}
+
+header {
+    box-sizing: border-box;
+    border-style: solid;
+    min-height: 100px;
 }
 
 #resultats {
@@ -46,14 +53,66 @@ td {
     border-width: 1px;
 }
 #formulaire{
-    overflow: auto;
-    border-style: solid;
-    border-width: 1px;
+    /*
     width: 15%;
-    height: 90%;
-    border-color: rgba(29,161,242,1);
+    border-width: 1px;
+    left: 0;
+    top : auto;
+    border-color: gray;
+    position: absolute;
+    */
+    padding: 20px;
+    height: 100%;
+    width: 300px;
+    position: absolute;
+    z-index: 1;
+    top: auto;
+    left: 0;
+    overflow-x: hidden;
 }
 
+.layout{
+    display: grid;
+    grid-template-rows: 50px 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    border-color: rgba(29,161,242,1);
+
+    overflow: hidden;
+    height: 800px;
+
+    margin-left: 275px;
+    padding-left: 20px;
+}
+
+button{
+    width: 100%;
+    background-color: rgba(29,161,242,1);
+    color: white;
+    padding: 14px 20px;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+    /*margin: 8px 0px;*/
+}
+
+button:hover{
+    background-color: rgb(26, 137, 206);
+}
+
+input[type="text"]{
+    width: 90%;
+    padding: 12px 2px;
+    display: inline-block;
+    box-sizing: border-box;
+    border-radius: 20px;
+    background-color: #e6e6e6;
+    border: 1px solid #ccc;
+    margin: 10px;
+
+}
+input[type=text]:focus {
+    border: 3px solid #555;
+  }
 label, a{
     cursor: pointer;
     user-select: none;
@@ -63,32 +122,6 @@ label, a{
     transition: border 0.2s;
     border-bottom: 5px solid rgba(rgba(29,161,242,1), 0.2);
     padding: 3px 2px;
-}
-
-.layout{
-    display: grid;
-    height: 600px;
-    width: 70%;
-    overflow: hidden;
-    grid-template-rows: 50px 1fr;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    float: right;
-    border-style: solid;
-    border-color: rgba(29,161,242,1);
-    border-width: 1px;
-}
-
-#frame #formulaire{
-    position: absolute;
-    top: 20%;
-    left: 15px;
-    height: auto;
-}
-
-#frame .layout{
-    position: absolute;
-    top:20%;
-    right: 15px;
 }
 
 input[type="radio"]{
@@ -116,8 +149,6 @@ label.nav{
     align-items: center;
 }
 
-
-
 .page-contents > *{
     overflow: auto;
     opacity: 0;
@@ -130,7 +161,6 @@ label.nav{
     }
 }
 
-
 input[type="radio"] + .page{
     transition: transform 0.2s;
     transform: translateX(100%);
@@ -142,4 +172,13 @@ input[type="radio"]:checked + .page{
 .page-contents > *{
     opacity: 1;
     transform: translateY(0px);
+}
+
+footer {
+    background:#ccc;
+    position:fixed;
+    bottom:0;
+    width:100%;
+    height:50px;
+    left: 0;
 }

@@ -10,7 +10,7 @@
 
     <body onload="load()">
         <header>
-            <h1 style="text-align: center;"> Tweet Map - Projet M1 ISD </h1>
+            <p style="text-align: left;"> Tweet Map - Projet M1 ISD </p>
         </header>
         <!-- Frame contenant le formulaire ainsi que les resultats -->
         <hr>
@@ -19,7 +19,10 @@
         <div id="formulaire">
             <h2> Formulaire </h2>
             Rechercher un tweet contenant : <br>
-            <input type="text" id="tweetText" />
+            <div id="tweet-text">
+                <input type="text" id="tweetText1" />
+                <input type="button" value="+" onClick="addInput('tweet-text');">
+           </div>
             <br><br>
             Nom d'utilisateur : <br>
             <input type="text" id="userName"/>
@@ -33,17 +36,18 @@
         <!-- Layout contenant le resultat sous differentes formes -->
         <div class="layout">
 
+
             <!-- List des tweets  -->
             <input name="nav" type="radio" class="nav list-radio" id="list" checked="checked"/>
             <div class="page list-page">
                 <div class="page-contents">
                     <div id="tweetList">
-                        
+                        No data
                     </div>
                 </div>
             </div>
             <label class="nav" for="list">
-                <h1> List </h1>
+                List 
             </label>
             
             <!-- Tableau des donnees brut (liste des tweets avec tous les champs possible) -->
@@ -56,32 +60,32 @@
                 </div>
             </div>
             <label class="nav" for="brutData">
-                <h1>Brut data</h1>    
+                Brut data  
             </label>
 
             <input name="nav" type="radio" class="map-radio" id="map" />
             <div class="page map-page">
                 <div class="page-contents">
                     <div id="world_map">
-
+                        no data
                     </div>
                 </div>
             </div>
             <label class="nav" for="map">
-                <h1>Map</h1>
+                Map
             </label>
 
             <!-- A ajouter, exemple type d'un nouvel onglet -->
             <input name="nav" type="radio" class="more-radio" id="more"/>
             <div class="page more-page">
                 <div class="page-contents">
-                    <div id="canvas">
-            
+                    <div id="hist">
+                        No data
                     </div>
                 </div>
             </div>
             <label class="nav" for="more">
-                <h1>more</h1>
+                more
             </label>
         </div>
         <footer>

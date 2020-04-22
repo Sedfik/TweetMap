@@ -30,7 +30,10 @@ def filter(data_frame, parameter, value):
 def get_tweets_query(data_frame,parameters):
     for p in parameters:
         for px in parameters[p]:
-            data_frame = filter(data_frame,p,px)
+            for s in px.split(','):
+                data_frame = filter(data_frame,p,s)
+
+            
     return str(data_frame.to_json(orient="records"))
 
 

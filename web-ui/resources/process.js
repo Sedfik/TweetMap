@@ -316,7 +316,6 @@ function addInput(divName){
           newdiv.innerHTML = " <div> <br><input type='text' id='"+id+"' name='myInputs[]'> <input type='button' value='-' onClick='removeInput();'> </div>";
           document.getElementById(divName).appendChild(newdiv);
 
-
      }
 }
 
@@ -325,4 +324,8 @@ function removeInput(){
   remove.removeChild(remove.lastElementChild);
   counter--;
 
+}
+
+function list_country_checkboxes(params) {
+  
 }

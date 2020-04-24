@@ -10,12 +10,12 @@ import tweetsprocess as tp
 TWEET_FILE_TO_SERVE = os.path.join(config.ROOT_DIR,"web-ui/resources/tweets.csv")
 
 class TweetHandler(http.server.SimpleHTTPRequestHandler):
-
     
     # Reception d'un GET
     def do_GET(self):
+
+        log.debug("Tweet file:"+str(TWEET_FILE_TO_SERVE))
         
-        log.debug("Tweet file:"+str(TWEET_FILE_TO_SERVE))        
         parsed_url = urlparse(self.path)
         # Recuperation du path et gestion d'une mauvais requete
         try:
@@ -37,17 +37,27 @@ class TweetHandler(http.server.SimpleHTTPRequestHandler):
                 
             else: # Il y a des parametres
                 print("query params",parse_qs(parsed_url.query))
-
                 tweet_filtered = tp.get_tweets_query(file_dataframe, parse_qs(parsed_url.query))    
-
-                #show which thread is treating the request
-                #print(threading.currentThread().getName())
             
             # Le resultat sera du json
             self.send_response(200)
             self.send_header('Content-type','application/json')
             self.end_headers()
             self.wfile.write(bytes(tweet_filtered, 'utf-8'))
+
+        if(path == "/countries"):
+            file_dataframe = tp.get_file_dataframe(TWEET_FILE_TO_SERVE)
+            try:
+                countries = tp.get_column_values(file_dataframe,"place_country_code")
+            except Exception as e:
+                countries = e
+            
+            # Le resultat sera du json
+            self.send_response(200)
+            self.send_header('Content-type','application/json')
+            self.end_headers()
+            self.wfile.write(bytes(countries, 'utf-8'))
+            
 
         # Ressource est un fichier ? : /index.html => index.html 
         file_name = path[1:] # On retire le slash
@@ -96,7 +106,7 @@ class TweetHandler(http.server.SimpleHTTPRequestHandler):
                     self.send_response(200)
                             
                 
-                except:  # Sinon not found 404
+                except:  # Sinon not found 4
                     self.send_error(404,'File Not Found %s' %file_name)       
 
                 self.send_header('Content-type',mimetype)

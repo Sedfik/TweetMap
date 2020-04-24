@@ -16,6 +16,18 @@ def get_tweets(data_frame):
     else: 
         return data_frame.to_json
     
+# Retroune la liste des colonnes presentes dans le dataframe
+def get_valid_column_name(data_frame):
+    return data_frame.columns
+
+"""
+Retourne toutes les valeurs d'une colonne en effacant les doublons.
+Trie les valeurs et les retourne
+"""
+def get_column_values(data_frame, column):
+    if(column in get_valid_column_name(data_frame)):
+        return data_frame[column].drop_duplicates(keep=False).sort_values().to_json(orient="records")
+    raise Exception("No such colomn",column,"in the data frame")
 
 """
 # Retourne la liste des tweets suivants les parametres

@@ -1,5 +1,5 @@
 function load() {
-  var tweetText = document.getElementById("tweetText");
+  var tweetText1 = document.getElementById("tweetText1");
 }
 var mapInitialized = false;
 /*
@@ -11,9 +11,21 @@ Dans la query on récupère tous les elements du doc avec id=nomColonne
 */
 
 function loadDoc() {
-  console.log(tweetText);
+
+  console.log(tweetText1);
   // TODO Gestion des inputs frauduleuses de l'utilisateur (caracteres speciaux...) 
-  let query = "text=" + tweetText.value;
+  var content = "";
+  for (var i = 1; i <= counter; i++) {
+    var tweetText = document.getElementById("tweetText"+i);
+    content = content + tweetText.value;
+    if (i < counter) {
+      content+=","
+    }
+  }
+
+  alert(content);
+  
+  let query = "text=" + content;
   
 
     let xhttp = new XMLHttpRequest();
@@ -31,39 +43,19 @@ function loadDoc() {
         console.log("list:" + listDiv);
       
         clearDiv(listDiv);
+        console.error(listDiv.innerHTML);
+        listDiv.appendChild(tweetList(res))
 
-        // Creation du tableau contenant les tweets
-        let table = document.createElement("table");
-        
-        listDiv.appendChild(table)
-        // Fonction de remplissage du tableau
-        res.forEach(e => {
-          console.log("Ajout des elements");
-          let tr = document.createElement("tr");
-          table.appendChild(tr)
-
-          let td = document.createElement("td")
-
-          let userName = e["user_name"];
-          let text = e["text"];
-
-          td.innerHTML += "<strong>" + userName + "</strong>"
-                          + "</br>"
-                          + text ;
-          
-          tr.appendChild(td)
-          
-        });        
         // TODO a debuger: Affichage simultane de brutDataDiv et listDiv
-        
         //brutDiv.appendChild();
-        let canvasDiv = document.getElementById("canvas");
-        clearDiv(canvasDiv);
-        canvasDiv.appendChild(hist(res,"place_country",600,500));
+        
+        let histDiv = document.getElementById("hist");
+        clearDiv(histDiv);
+        histDiv.appendChild(hist(res,"place_country",600,500));
 
         let mapDiv = document.getElementById("world_map");
-
         clearDiv(mapDiv);
+        
         console.log("div dim",mapDiv.clientWidth);
         let mapCanva = drawMap(res,1000,500);
         
@@ -72,7 +64,7 @@ function loadDoc() {
     };
     xhttp.open("GET", "tweets?"+query, true);
     
-    xhttp.timeout = 500
+    xhttp.timeout = 1500
     xhttp.ontimeout = () => {
       console.error('Timeout!!')
       alert("Request Timeout")
@@ -80,6 +72,33 @@ function loadDoc() {
 
     xhttp.send();
 }
+
+function tweetList(jsonData) {
+   // Creation du tableau contenant les tweets
+   let table = document.createElement("table");
+        
+   // Fonction de remplissage du tableau
+   jsonData.forEach(e => {
+     console.log("Ajout des elements");
+     let tr = document.createElement("tr");
+     table.appendChild(tr)
+
+     let td = document.createElement("td")
+
+     let userName = e["user_name"];
+     let text = e["text"];
+
+     td.innerHTML += "<p><strong>" + userName + "</strong></p>"
+                     + "</br><p>"
+                     + text 
+                     + "</p>";
+     
+     tr.appendChild(td)
+
+   });
+   return table;
+}
+
 
 
 /**
@@ -252,7 +271,7 @@ function drawMap(jsonData, width, height) {
       console.log(element['longitude'],":",element['latitude']);
       
       // Calcul des coordonnes x,y suivant la longitude et latitude ainsi que la taille du canvas
-      let coor = mercatorXY(canva.width,canva.height,element['longitude'],element['latitude']);
+      let coor = mercatorXY(width,height,element['longitude'],element['latitude']);
       
       // coor = [x,y]
       console.log(coor);
@@ -282,4 +301,31 @@ function mercatorXY(width,height,longitude,latitude) {
   y = (height/2) - ( (width/(2*Math.PI)) * ( Math.log( Math.tan( Math.PI/4 + radLatitude/2 ))));
   
   return [x,y];
+}
+
+var counter = 1;
+var limit = 3;
+function addInput(divName){
+     if (counter == limit)  {
+          alert("You have reached the limit of adding " + counter + " inputs");
+     }
+     else {
+          var newdiv = document.createElement('div');
+          counter++
+          id = "tweetText"+counter
+          newdiv.innerHTML = " <div> <br><input type='text' id='"+id+"' name='myInputs[]'> <input type='button' value='-' onClick='removeInput();'> </div>";
+          document.getElementById(divName).appendChild(newdiv);
+
+     }
+}
+
+function removeInput(){
+  var remove = document.getElementById('tweet-text');
+  remove.removeChild(remove.lastElementChild);
+  counter--;
+
+}
+
+function list_country_checkboxes(params) {
+  
 }

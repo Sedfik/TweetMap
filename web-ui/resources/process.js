@@ -64,7 +64,7 @@ function loadDoc() {
     };
     xhttp.open("GET", "tweets?"+query, true);
     
-    xhttp.timeout = 500
+    xhttp.timeout = 1500
     xhttp.ontimeout = () => {
       console.error('Timeout!!')
       alert("Request Timeout")
@@ -271,7 +271,7 @@ function drawMap(jsonData, width, height) {
       console.log(element['longitude'],":",element['latitude']);
       
       // Calcul des coordonnes x,y suivant la longitude et latitude ainsi que la taille du canvas
-      let coor = mercatorXY(canva.width,canva.height,element['longitude'],element['latitude']);
+      let coor = mercatorXY(width,height,element['longitude'],element['latitude']);
       
       // coor = [x,y]
       console.log(coor);

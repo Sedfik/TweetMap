@@ -26,20 +26,27 @@ header {
     border-bottom-width: gray;
 }
 
+#tweetList table {
+    width: 70%;
+    border-style: solid;
+}
+
+#tweetList tr {
+    width: 50%;
+}
+
 .page-contents{
     margin: 0 auto;
 }
 /*TODO : Regler le probleme d'affichage des resultats*/
 #tweetList,
- #world_map,
  #hist {
-    overflow: auto;
-    padding: 10px 400px 20px;
+    /*padding: 10px 400px 20px;*/
 }
 
 #world_map {
     overflow: auto;
-    padding: 10px 400px 20px;
+    /*padding: 10px 400px 20px;*/
     /*height: 500px;
     position: relative;
     top: 50%;
@@ -157,7 +164,7 @@ label.nav{
     grid-column-end: span 4;
     padding: 0px 20px;
     display: flex;
-    /*align-items: center;*/
+    align-items: center;
 }
 
 input[type="radio"] + .page{

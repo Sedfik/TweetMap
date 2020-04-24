@@ -88,9 +88,10 @@ function tweetList(jsonData) {
      let userName = e["user_name"];
      let text = e["text"];
 
-     td.innerHTML += "<strong>" + userName + "</strong>"
-                     + "</br>"
-                     + text ;
+     td.innerHTML += "<p><strong>" + userName + "</strong></p>"
+                     + "</br><p>"
+                     + text 
+                     + "</p>";
      
      tr.appendChild(td)
 

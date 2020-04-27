@@ -1,6 +1,21 @@
 function load() {
   var tweetText1 = document.getElementById("tweetText1");
+
+  var checkboxes = document.getElementById("country_checkboxes");
+  console.log("creation de la liste des pays");
+  let xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    console.log(this.readyState);
+    if (this.readyState == 4 && this.status == 200) {
+      let res = JSON.parse(this.responseText);
+      console.log(res)
+      checkboxes.appendChild(create_country_checkboxes(res));
+    }
+  };
+  xhttp.open("GET", "countries", true);
+  xhttp.send();
 }
+
 var mapInitialized = false;
 /*
 //TODO 
@@ -99,6 +114,21 @@ function tweetList(jsonData) {
    return table;
 }
 
+
+function create_country_checkboxes(jsonData) {
+  let div =  document.createElement("div");
+
+  jsonData.forEach(country_code => {
+    let checkbox = document.createElement("input")
+    checkbox.type = "checkbox";
+    checkbox.id = country_code;
+    checkbox.innerHTML = country_code;
+    div.appendChild(checkbox);
+    div.appendChild(document.createElement("br"));
+  });
+
+  return div;
+}
 
 
 /**
@@ -326,6 +356,3 @@ function removeInput(){
 
 }
 
-function list_country_checkboxes(params) {
-  
-}

@@ -32,19 +32,14 @@ function loadDoc() {
     xhttp.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
         let res = JSON.parse(this.responseText);
+        globalData = res;
 
         console.log(res);
         document.getElementById("nbTweets").innerHTML =  res.length;
         //document.getElementById("brutData").innerHTML = JSON.stringify(res);
 
        
-
-        let listDiv = document.getElementById("tweetList");
-        console.log("list:" + listDiv);
-      
-        clearDiv(listDiv);
-        console.error(listDiv.innerHTML);
-        listDiv.appendChild(tweetList(res))
+        tweetList(0,15);
 
         // TODO a debuger: Affichage simultane de brutDataDiv et listDiv
         //brutDiv.appendChild();
@@ -73,34 +68,101 @@ function loadDoc() {
     xhttp.send();
 }
 
-function tweetList(jsonData) {
+var page;
+var globalData;
+function tweetList(p,TweetPerPage) {
+   page = p;
+   let listDiv = document.getElementById("tweetList");
+   console.log("list:" + listDiv);
+   clearDiv(listDiv);
+   console.error(listDiv.innerHTML);
+
    // Creation du tableau contenant les tweets
-   let table = document.createElement("table");
+   let bigDiv = document.createElement("div");
+   bigDiv.classList.add("grid-container");
         
-   // Fonction de remplissage du tableau
-   jsonData.forEach(e => {
+   // Fonction de remplissage de list
+   // 15 c'est le nombre de tweets que j'affiche par page
+   for (let i =TweetPerPage*p;(i<(p+1)*TweetPerPage)&& (i<globalData.length);i++){
+
+     let cell = document.createElement("div");
+     cell.classList.add("grid-item");
      console.log("Ajout des elements");
-     let tr = document.createElement("tr");
-     table.appendChild(tr)
+     let userName = globalData[i]["user_name"];
+     let text = globalData[i]["text"];
 
-     let td = document.createElement("td")
 
-     let userName = e["user_name"];
-     let text = e["text"];
-
-     td.innerHTML += "<p><strong>" + userName + "</strong></p>"
+     let content =  document.createElement("div");
+     content.classList.add("interiorContent")
+     content.innerHTML += '<p> <i style="font-size:16px " class="fa">&#xf099;</i> <strong>' 
+                           + userName + "</strong></p>"
                      + "</br><p>"
                      + text 
                      + "</p>";
-     
-     tr.appendChild(td)
 
-   });
-   return table;
+     cell.appendChild(content);
+     bigDiv.appendChild(cell);
+
+   }
+
+   //manipulation de la pagination
+   pageVisibility();
+
+
+   listDiv.appendChild(bigDiv);
+   return ;
 }
 
 
+function pageVisibility()
+{
+  //affichage de la pagination si le contenu est suffisant
+  if (globalData.length > 15){
+    document.getElementById("pagination").style.display = "block";
+  }
+  else{
+    document.getElementById("pagination").style.display = "none";
+  }
 
+  //premiére page 
+  if (page == 0 ){
+    var leftArrow = document.getElementById("la");
+    leftArrow.classList.add("nonClickable");
+    leftArrow.style.color = "grey";
+  }
+
+  //derniére page 
+  if ((page+1) * 15 > globalData.length)
+  {
+    var rightArrow = document.getElementById("ra");
+    rightArrow.classList.add("nonClickable");
+    rightArrow.style.color = "grey";   
+  }
+  else{
+
+    var rightArrow = document.getElementById("ra");
+    rightArrow.classList.remove("nonClickable");
+    rightArrow.style.color = "black";   
+  }
+
+  // toutes les pages sauf la premiére
+  if (page > 0)
+  {
+    var leftArrow = document.getElementById("la");
+    leftArrow.classList.remove("nonClickable");
+    leftArrow.style.color = "black";
+  }
+
+}
+
+function nextPage(){
+  tweetList(page+1,15);
+}
+
+
+function prevPage(){
+  tweetList(page-1,15);
+}
 /**
  * Affiche les donnees brut dans un tableau
  * 

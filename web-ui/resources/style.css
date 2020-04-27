@@ -1,4 +1,8 @@
   
+body {
+  overflow: hidden; /* Hide scrollbars */
+}
+
 *{
     font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
     box-sizing: border-box;
@@ -31,7 +35,7 @@ td {
 
 #tweetList {
     padding: 10px 40px 20px;
-    height: 1000px;
+    height: 800px;
 
 }
 
@@ -69,9 +73,8 @@ td {
     grid-template-rows: 50px 1fr;
     grid-template-columns: 1fr 1fr 1fr 1fr;
     border-color: rgba(29,161,242,1);
-
+    height: 100%;
     overflow: hidden;
-    height: 800px;
 
     margin-left: 275px;
     padding-left: 20px;
@@ -185,16 +188,53 @@ footer {
 .grid-container {
   display: grid;
   grid-template-columns: auto auto auto;
-  background-color: #2196F3;
   padding: 10px;
   width: 100%;
+  margin-bottom: 40px;
 }
 
 .grid-item {
-  background-color: rgba(255, 255, 255, 0.8);
-  border: 1px solid rgba(0, 0, 0, 0.8);
-  padding: 20px;
+
   font-size: 12px;
   text-align: center;
+  border: 3px solid white ;
+
 }
 
+.interiorContent{
+    border: 2px solid #4dafff ;
+    border-radius: 5px;
+    padding: 20px;
+    height:  100%;
+}
+
+#pagination {
+
+    position: relative;
+    left: 1050px;
+    width: 200px
+    background-color:red;
+    display: none
+}
+
+#pagination a {
+  color: black;
+  padding: 8px 16px;
+  text-decoration: none;
+  transition: background-color .3s;
+  border: 1px solid ;
+}
+
+
+footer{
+    padding: 5px
+}
+
+.nonClickable{
+  pointer-events: none;
+  cursor: default;
+}
+
+#formButton{
+    font-size: 24px;
+}

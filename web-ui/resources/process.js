@@ -141,19 +141,23 @@ function create_country_checkboxes(jsonData) {
 
     i++;
 
+    
     checkbox.name = country_code;
     div.appendChild(checkbox);
 
     let label = document.createElement("label");
     label.for = country_code;
-    label.innerHTML = country_code;
+    console.log(country_code == null);
+    
 
+    label.innerHTML = getCountryName(country_code);
+    if(country_code == null){
+      label.innerHTML = "undefined";
+    }
     div.appendChild(label);
 
     div.appendChild(document.createElement("br"));
   });
-  // Certains tweets n'ont pas de champs definis 
-  //let undefined_country;
 
   return div;
 }

@@ -29,23 +29,33 @@ def get_column_values(data_frame, column):
         return data_frame[column].drop_duplicates(keep=False).sort_values().to_json(orient="records")
     raise Exception("No such colomn",column,"in the data frame")
 
+
+"""
+# Filtre le data frame suivant le parametre et ses valeurs
+# Le filtre fait un OU inclusif.
+# La gestion des NaN " param='' " se fait par un isnull() de panda
+# parametre : data_frame
+# parametre : parameter -> Le parametre ex: "place_country_code"
+# parametre : values    -> Les valeurs du parametre ex ["fr","us","en,]  
+"""
+def filter(data_frame, parameter, values):
+    keep_undefined = '' in values
+
+    print("keep undefined",keep_undefined)
+
+    patern = re.compile("|".join(values))
+
+    return data_frame[ data_frame[parameter].str.contains(patern,na=keep_undefined) ]
+
 """
 # Retourne la liste des tweets suivants les parametres
 # parametre : data_frame -> le jeu de donnees sur lequel appliquer les filtres 
-# parametre : parameters -> la liste des parametres sous forme: {'params1': ['value1'],'params1': ['value1']}
-
+# parametre : parameters -> la liste des parametres sous forme: {'params1': ['value1'],'params2': ['value1','value2']}
 """
-def filter(data_frame, parameter, value):
-    patern = re.compile(value)
-    return data_frame[data_frame[parameter].str.contains(patern)]
-
 def get_tweets_query(data_frame,parameters):
     for p in parameters:
-        for px in parameters[p]:
-            for s in px.split(','):
-                data_frame = filter(data_frame,p,s)
+        data_frame = filter(data_frame,p,parameters[p])
 
-            
     return str(data_frame.to_json(orient="records"))
 
 

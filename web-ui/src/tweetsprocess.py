@@ -26,7 +26,7 @@ Trie les valeurs et les retourne
 """
 def get_column_values(data_frame, column):
     if(column in get_valid_column_name(data_frame)):
-        return data_frame[column].drop_duplicates(keep=False).sort_values().to_json(orient="records")
+        return data_frame[column].drop_duplicates().sort_values().to_json(orient="records")
     raise Exception("No such colomn",column,"in the data frame")
 
 
@@ -39,7 +39,7 @@ def get_column_values(data_frame, column):
 # parametre : values    -> Les valeurs du parametre ex ["fr","us","en,]  
 """
 def filter(data_frame, parameter, values):
-    keep_undefined = '' in values
+    keep_undefined = 'null' in values
 
     print("keep undefined",keep_undefined)
 

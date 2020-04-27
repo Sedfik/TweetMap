@@ -152,6 +152,8 @@ function create_country_checkboxes(jsonData) {
 
     div.appendChild(document.createElement("br"));
   });
+  // Certains tweets n'ont pas de champs definis 
+  //let undefined_country;
 
   return div;
 }

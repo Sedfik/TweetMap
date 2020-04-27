@@ -26,15 +26,17 @@
            </div>
             <br><br>
             Nom d'utilisateur : <br>
-            <input type="text" id="userName"/>
+            <input type="text" id="userName" placeholder="User name"/>
             <br><br>
             Hashtag : <br>
-            <input type="text" id="hashtag"/>
+            <input type="text" id="hashtag" placeholder="Hashtag"/>
             <br><br>
             Liste des pays
+            <input type="text" id="search_country" placeholder="Country name" onkeyup="filter_countries()"/>
             <div id="country_checkboxes">
             </div>
             <br>
+
             <button onclick="loadDoc()" value="send" id="formButton"> rechercher </button>
         
            

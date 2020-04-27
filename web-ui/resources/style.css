@@ -72,14 +72,25 @@ header {
     overflow-x: hidden;
 }
 
+#search_country {
+    background-image: url('/searchIcon.png');
+    position: left;
+    padding-left: 30px;
+    background-size: 20px;
+    background-repeat: no-repeat;
+    background-position: 10px 10px;
+    padding: 12px 20px 12px 40px;
+
+
+}
+
 #country_checkboxes {
     height: 200px;
     overflow-y: auto;
 }
 
 #country_checkboxes input[type="checkbox"]{
-    transform: scale(0.5);
-    
+    transform: scale(1);
 }
 
 .layout{

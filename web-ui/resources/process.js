@@ -131,35 +131,43 @@ function tweetList(jsonData) {
  * @param {*} jsonData 
  */
 function create_country_checkboxes(jsonData) {
-  let div =  document.createElement("div");
+  let ul =  document.createElement("ul");
+
+  ul.id = "country_checkbox_list"
 
   let i = 0;
+
   jsonData.forEach(country_code => {
+    
+    let li = document.createElement("li");
+
     let checkbox = document.createElement("input")
+    
     checkbox.type = "checkbox";
     checkbox.id = "country"+i;
 
     i++;
-
     
     checkbox.name = country_code;
-    div.appendChild(checkbox);
+    
+    li.appendChild(checkbox);
 
     let label = document.createElement("label");
     label.for = country_code;
-    console.log(country_code == null);
     
-
     label.innerHTML = getCountryName(country_code);
+    
     if(country_code == null){
       label.innerHTML = "undefined";
     }
-    div.appendChild(label);
+    
+    li.appendChild(label)
+    li.appendChild(document.createElement("br"));
 
-    div.appendChild(document.createElement("br"));
+    ul.appendChild(li);
   });
 
-  return div;
+  return ul;
 }
 
 /**
@@ -407,3 +415,19 @@ function removeInput(){
 
 }
 
+function filter_countries() {
+  let input = document.getElementById("search_country");
+  let ul_checkboxes = document.getElementById("country_checkbox_list")
+
+  let li = ul_checkboxes.getElementsByTagName("li");
+
+  for( i = 0; i < li.length; i++){
+    let label = li[i].getElementsByTagName("label")[0];
+    
+    if(label.textContent.toUpperCase().indexOf(input.value.toUpperCase()) > -1){
+      li[i].style.display = "";
+    } else{
+      li[i].style.display = "none";
+    }
+  }
+}

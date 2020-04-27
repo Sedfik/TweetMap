@@ -29,6 +29,8 @@ function loadDoc() {
 
   console.log(tweetText1);
   // TODO Gestion des inputs frauduleuses de l'utilisateur (caracteres speciaux...) 
+  
+  // Recuperation des champs de recheche
   var content = "";
   for (var i = 1; i <= counter; i++) {
     var tweetText = document.getElementById("tweetText"+i);
@@ -38,54 +40,63 @@ function loadDoc() {
     }
   }
 
-  alert(content);
+  console.log(content);
   
   let query = "text=" + content;
   
+  
+  // Recuperation des pays filtres
+  let country_query = get_country_query();
 
-    let xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        let res = JSON.parse(this.responseText);
+  if(country_query != ""){
+    query += "&"+country_query;
+  }
 
-        console.log(res);
-        document.getElementById("nbTweets").innerHTML =  res.length;
-        //document.getElementById("brutData").innerHTML = JSON.stringify(res);
+  console.log("query:",query);
 
-       
+  // Requette de filtre au serveur
+  let xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      let res = JSON.parse(this.responseText);
 
-        let listDiv = document.getElementById("tweetList");
-        console.log("list:" + listDiv);
+      console.log(res);
+      document.getElementById("nbTweets").innerHTML =  res.length;
+      //document.getElementById("brutData").innerHTML = JSON.stringify(res);
       
-        clearDiv(listDiv);
-        console.error(listDiv.innerHTML);
-        listDiv.appendChild(tweetList(res))
 
-        // TODO a debuger: Affichage simultane de brutDataDiv et listDiv
-        //brutDiv.appendChild();
-        
-        let histDiv = document.getElementById("hist");
-        clearDiv(histDiv);
-        histDiv.appendChild(hist(res,"place_country",600,500));
-
-        let mapDiv = document.getElementById("world_map");
-        clearDiv(mapDiv);
-        
-        console.log("div dim",mapDiv.clientWidth);
-        let mapCanva = drawMap(res,1000,500);
-        
-        mapDiv.appendChild(mapCanva);
-      }
-    };
-    xhttp.open("GET", "tweets?"+query, true);
+      let listDiv = document.getElementById("tweetList");
+      console.log("list:" + listDiv);
     
-    xhttp.timeout = 1500
-    xhttp.ontimeout = () => {
-      console.error('Timeout!!')
-      alert("Request Timeout")
-    };
+      clearDiv(listDiv);
+      console.error(listDiv.innerHTML);
+      listDiv.appendChild(tweetList(res))
 
-    xhttp.send();
+      // TODO a debuger: Affichage simultane de brutDataDiv et listDiv
+      //brutDiv.appendChild();
+      
+      let histDiv = document.getElementById("hist");
+      clearDiv(histDiv);
+      histDiv.appendChild(hist(res,"place_country",600,500));
+
+      let mapDiv = document.getElementById("world_map");
+      clearDiv(mapDiv);
+      
+      console.log("div dim",mapDiv.clientWidth);
+      let mapCanva = drawMap(res,1000,500);
+      
+      mapDiv.appendChild(mapCanva);
+    }
+  };
+  xhttp.open("GET", "tweets?"+query, true);
+  
+  xhttp.timeout = 1500
+  xhttp.ontimeout = () => {
+    console.error('Timeout!!')
+    alert("Request Timeout")
+  };
+
+  xhttp.send();
 }
 
 function tweetList(jsonData) {
@@ -114,22 +125,56 @@ function tweetList(jsonData) {
    return table;
 }
 
-
+/**
+ * Fonction de creation des checkbox en fonction des pays recupere du serveur.
+ * Retourne une div contenant l'ensemble des checkbox
+ * @param {*} jsonData 
+ */
 function create_country_checkboxes(jsonData) {
   let div =  document.createElement("div");
 
+  let i = 0;
   jsonData.forEach(country_code => {
     let checkbox = document.createElement("input")
     checkbox.type = "checkbox";
-    checkbox.id = country_code;
-    checkbox.innerHTML = country_code;
+    checkbox.id = "country"+i;
+
+    i++;
+
+    checkbox.name = country_code;
     div.appendChild(checkbox);
+
+    let label = document.createElement("label");
+    label.for = country_code;
+    label.innerHTML = country_code;
+
+    div.appendChild(label);
+
     div.appendChild(document.createElement("br"));
   });
 
   return div;
 }
 
+/**
+ * Fonction pour récupérer les pays selectionnes sous forme de parametre
+ * ex: place_country_code=fr&place_contry_code=en
+ */
+function get_country_query() {
+  let query = "";
+  let i = 0;
+
+  let country = document.getElementById("country"+i);
+  console.log(country);
+  while(country != null){
+    if(country.checked){
+      query += "place_country_code="+country.name+"&";
+    }
+    i++;
+    country = document.getElementById("country"+i);
+  }
+  return query.slice(0,-1);
+}
 
 /**
  * Affiche les donnees brut dans un tableau

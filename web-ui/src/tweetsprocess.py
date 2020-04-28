@@ -64,7 +64,7 @@ def get_tweets_query(data_frame,parameters):
     if(len(filters_list) < 2):
         data_frame = data_frame[filters_list[0]]
     else:
-        data_frame = data_frame[reduce(lambda x, acc: x | acc, filters_list)]
+        data_frame = data_frame[reduce(lambda x, acc: x & acc, filters_list)]
 
     return data_frame.to_json(orient="records")
 

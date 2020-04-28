@@ -50,11 +50,6 @@ function loadDoc() {
   
   let query = get_query();
   
-  
-  // Recuperation des pays filtres
-  let country_query = get_country_query();
-
-  
   console.log("query:",query);
 
   // Requette de filtre au serveur
@@ -86,6 +81,14 @@ function loadDoc() {
 
       histDiv.appendChild(hist(res,"place_country",600,500));
       console.log("--- Fin histogramme ---");
+
+      let pieDiv = document.getElementById("pieChart");
+      clearDiv(pieDiv);
+
+      let pieHashtag = drawPie(res,"hashtag_0",400,400);
+
+      pieDiv.appendChild(pieHashtag);
+
 
       let mapDiv = document.getElementById("world_map");
       clearDiv(mapDiv);
@@ -421,6 +424,87 @@ function clearDiv(div) {
   }
   console.log("End clearing");
 }
+
+
+
+function drawPie(jsonData, columnName , width, height) {
+  let canva = document.createElement("canvas");
+  canva.width = width;
+  canva.height = height;
+  let context = canva.getContext("2d");
+
+  // Le centre du cercle
+  let xCenter, yCenter;
+
+  xCenter = width / 3;
+  yCenter = height / 3;
+
+  // Creation d'un dictionnaire qui pour chaque pays donne le nombre de tweets -> { "France": "12" }
+  let dict = {}
+  jsonData.forEach(element => {
+    let columnValue = element[columnName];
+    if(typeof dict[columnValue] == 'undefined'){
+      dict[columnValue] = 1;
+      //console.log("initialize",columnValue)
+    }
+    else{
+      dict[columnValue] += 1;
+      //console.log("addTo",columnValue)
+    }
+  });
+  // Fonction de calcul de la somme des valeurs d'un dictionnaire
+  let valuesSumOfDict = Object.keys(dict).reduce(( (acc,cur) => dict[cur] + acc),0)  
+  console.log("sum",valuesSumOfDict);
+  console.log(dict);
+
+  let beginAngle = 0;
+  let endAngle = 0;
+
+  let xText = 300;
+  let yText = 50;
+
+  let rectSize = 10;
+
+  for(key in dict){
+
+    console.log(dict[key]);
+  
+    let angle = 2 * Math.PI * (dict[key] * 100 / valuesSumOfDict);
+  
+    console.log("beginangle",angle);
+
+    beginAngle = endAngle;
+
+    endAngle += angle;
+
+    
+    context.beginPath();
+
+
+
+    context.moveTo(xCenter,yCenter);
+
+    context.arc(xCenter,yCenter,100,beginAngle,endAngle);
+    context.lineTo(xCenter,yCenter);
+
+
+    context.rect(xText, yText - rectSize, rectSize, rectSize);
+    
+    context.fillText(key,xText + rectSize + 5,yText );
+    
+    yText += 2*rectSize;
+    context.stroke()
+  }
+  
+  return canva;
+}
+
+
+function drawKeys(canvas, dict,xStart, yStart, xMax, yMax) {
+
+}
+
+
 
 function size_dict(d){c=0; for (i in d) ++c; return c}
 

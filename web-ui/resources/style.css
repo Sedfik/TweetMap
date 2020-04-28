@@ -13,12 +13,15 @@ html, body {
 
 header {
     height: 12%;
-    padding: 40px;
     background-color: #1da1f2;
     border-bottom-style: solid;
     opacity: 0.7;
 }
 
+header p {
+    text-align: left;
+    padding: 30px;
+}
 #resultats {
     float: right;
 }
@@ -61,14 +64,43 @@ td {
     overflow-x: hidden;
 }
 
-#search_country {
-    background-image: url('/searchIcon.png');
+input[type="text"]{
+    
     position: left;
     padding-left: 30px;
     background-size: 20px;
     background-repeat: no-repeat;
     background-position: 10px 10px;
     padding: 12px 20px 12px 40px;
+
+    width: 70%;
+
+    display: inline-block;
+    border-radius: 20px;
+    background-color: #e6e6e6;
+    border: 1px solid #ccc;
+    margin: 10px;
+
+}
+input[type=text]:focus {
+    border: 1px solid grey;
+    box-shadow: 0px 5px 10px gray;
+ }
+
+.tweetText{
+    background-image: url('/twitter_icon.png');
+
+}
+
+#userName{
+    background-image: url('/user_icon.png');
+}
+
+#hashtag{
+    background-image: url('/hash_tag.png');
+}
+#search_country {
+    background-image: url('/searchIcon.png');
 }
 
 #country_checkboxes {
@@ -107,26 +139,12 @@ button:hover{
     background-color: rgb(26, 137, 206);
 }
 
-input[type="text"]{
-    width: 90%;
-    padding: 12px 2px;
-    display: inline-block;
-    box-sizing: border-box;
-    border-radius: 20px;
-    background-color: #e6e6e6;
-    border: 1px solid #ccc;
-    margin: 10px;
 
-}
-input[type=text]:focus {
-    border: 3px solid #555;
- }
-
-label, a{
+label,a{
     cursor: pointer;
     user-select: none;
     text-decoration: none;
-    display: inline-block;
+    
     color: inherit;
     transition: border 0.2s;
     border-bottom: 5px solid rgba(rgba(29,161,242,1), 0.2);
@@ -184,15 +202,6 @@ input[type="radio"]:checked + .page{
     transform: translateY(0px);
 }
 
-footer {
-    background:#ccc;
-    position:fixed;
-    bottom:0;
-    width:100%;
-    height:5.9%;
-    left: 0;
-}
-
 .grid-container {
   display: grid;
   grid-template-columns: auto auto auto;
@@ -214,27 +223,43 @@ footer {
     height:  100%;
 }
 
-#pagination {
-    position: relative;
-    width: 20%;
-    margin: 0 auto;
+footer{
+    height: 8%;
+    width:100%;
+
+    background:#ccc;
     
-    background-color:white;
+    bottom: 0;
+    position:fixed;
+  
+    box-shadow: inset 0px 5px 8px grey;
+}
+
+#pagination {
+    width: 10%;
+    position: absolute;
+    left: 55%;
+    top: 20%;
+    display: inline-block;
+
+    text-align: center;
+
+    background-color: inherit;
     display: none;
 }
 
 #pagination a {
-  color: black;
-  padding: 8px 16px;
-  text-decoration: none;
-  transition: background-color .3s;
-  border: 1px solid ;
-}
+    color: black;
 
+    
+    background-color: inherit;
 
-footer{
-    height: 8%;
-    box-shadow: inset 0px 5px 8px grey;
+    display: inline-block;
+
+    border: 1px solid;
+    transition: background-color .3s;
+    
+
 }
 
 .nonClickable{

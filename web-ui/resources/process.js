@@ -2,6 +2,10 @@ let page;
 let globalData;
 let mapInitialized = false;
 
+
+let counter = 1;
+let LIMIT = 3;
+
 function load() {
   var tweetText1 = document.getElementById("tweetText1");
 
@@ -479,17 +483,15 @@ function mercatorXY(width,height,longitude,latitude) {
   return [x,y];
 }
 
-var counter = 1;
-var limit = 3;
 function addInput(divName){
-     if (counter == limit)  {
-          alert("You have reached the limit of adding " + counter + " inputs");
+     if (counter == LIMIT)  {
+          alert("You have reached the LIMIT of adding " + counter + " inputs");
      }
      else {
           var newdiv = document.createElement('div');
-          counter++
-          id = "tweetText"+counter
-          newdiv.innerHTML = " <div> <br><input type='text' id='"+id+"' name='myInputs[]'> <input type='button' value='-' onClick='removeInput();'> </div>";
+          counter++;
+          id = "tweetText"+counter;
+          newdiv.innerHTML = " <div> <input type='text' id='"+id+"' name='myInputs[]' > <input type='button' value='-' class='lessBtn' onClick='removeInput();'> </div>";
           document.getElementById(divName).appendChild(newdiv);
 
      }
@@ -499,7 +501,6 @@ function removeInput(){
   var remove = document.getElementById('tweet-text');
   remove.removeChild(remove.lastElementChild);
   counter--;
-
 }
 
 function filter_countries() {

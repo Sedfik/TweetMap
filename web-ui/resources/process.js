@@ -27,32 +27,29 @@ Pour chaque nom de colonne on crée un nouveau formulaire suivant ces noms
 Dans la query on récupère tous les elements du doc avec id=nomColonne
 */
 
+
+let get_query_functions = [
+  get_text_query,
+  get_country_query
+];
+
+function get_query() {
+  let queries = get_query_functions.map(f => f());
+
+  return queries.join("&");
+}
+
 function loadDoc() {
 
   console.log(tweetText1);
   // TODO Gestion des inputs frauduleuses de l'utilisateur (caracteres speciaux...) 
   
-  // Recuperation des champs de recheche
-  var content = "";
-  for (var i = 1; i <= counter; i++) {
-    var tweetText = document.getElementById("tweetText"+i);
-    content = content + tweetText.value;
-    if (i < counter) {
-      content+=","
-    }
-  }
-
-  console.log(content);
-  
-  let query = "text=" + content;
+  let query = get_query();
   
   
   // Recuperation des pays filtres
   let country_query = get_country_query();
 
-  if(country_query != ""){
-    query += "&"+country_query;
-  }
   
   console.log("query:",query);
 
@@ -104,6 +101,19 @@ function loadDoc() {
   };
 
   xhttp.send();
+}
+
+
+function get_text_query() {
+   // Recuperation des champs de recheche
+   let query = [];
+   for (let i = 1; i <= counter; i++) {
+     let tweetText = document.getElementById("tweetText"+i);
+     
+     query.push("text="+tweetText.value);
+     
+   }
+   return query.join("&");
 }
 
 
@@ -249,19 +259,20 @@ function create_country_checkboxes(jsonData) {
  * ex: place_country_code=fr&place_contry_code=en
  */
 function get_country_query() {
-  let query = "";
+  let query = [];
   let i = 0;
 
   let country = document.getElementById("country"+i);
   console.log(country);
+
   while(country != null){
     if(country.checked){
-      query += "place_country_code="+country.name+"&";
+      query.push("place_country_code="+country.name);
     }
     i++;
     country = document.getElementById("country"+i);
   }
-  return query.slice(0,-1);
+  return query.join("&");
 }
 
 
@@ -323,11 +334,11 @@ function hist(jsonData,columnName,width,height) {
     let columnValue = element[columnName];
     if(typeof dict[columnValue] == 'undefined'){
       dict[columnValue] = 1;
-      console.log("initialize",columnValue)
+      //console.log("initialize",columnValue)
     }
     else{
       dict[columnValue] += 1;
-      console.log("addTo",columnValue)
+      //console.log("addTo",columnValue)
     }
   });
   
@@ -343,13 +354,13 @@ function hist(jsonData,columnName,width,height) {
   // Fonction de recuperation de la valeur maximale du dictionnaire
   // ex: { "France": 12, "Espagne":23 } -> maxOfDict retourne 23
   let maxOfDict = Object.keys(dict).reduce(( (acc,cur) => dict[cur] > acc ? dict[cur] : acc),0)  
-  console.log("max",maxOfDict);
+  //console.log("max",maxOfDict);
 
   
   let yRatio = rectMaxHeight / maxOfDict; // Definition du ratio que vaut 1 "point" afin de calculer la hauteur du rectangle dans le canvas
-  console.log("yR",yRatio);
+  //console.log("yR",yRatio);
 
-  console.log("canvas width",canva.width);
+  //console.log("canvas width",canva.width);
 
   let number; // Valeur d'une clef du dictionnaire
 
@@ -357,12 +368,12 @@ function hist(jsonData,columnName,width,height) {
   for(key in dict){
     number = dict[key] * yRatio; 
     
-    console.log("number",key,":",number);
+    //console.log("number",key,":",number);
 
     // On dessine le rectangle correspondant
     //rect(x:, y: on part de l'origine, on ajoute la difference entre la taille max et la valeur du nombre d'occurence, xWidth, yHeigth)
     context.rect(x, yOrigin + rectMaxHeight - number, rectWidth, number);
-    console.log("draw rect(",x,",",yOrigin + rectMaxHeight-number,",",rectWidth,",",number  ,")");
+    //console.log("draw rect(",x,",",yOrigin + rectMaxHeight-number,",",rectWidth,",",number  ,")");
     
     // On ecrit le nombre d'occurences
     context.fillText(dict[key],x,yOrigin + rectMaxHeight-number-5);
@@ -372,7 +383,7 @@ function hist(jsonData,columnName,width,height) {
     context.save();
     // On decale le context mettant les origines en bas du graph et on laisse de la place pour ecrire la clef
     context.translate(x+(rectWidth/2), yOrigin + rectMaxHeight+ key.length +40); // key.lenght bizare -> TODO a tester
-    console.log("length",key,":",key.length);
+    //console.log("length",key,":",key.length);
     // On tourne
     context.rotate(-Math.PI/2);
     // On ecrit le text
@@ -433,13 +444,13 @@ function drawMap(jsonData, width, height) {
     // Pour chaque tweets
     jsonData.forEach(element => {
 
-      console.log(element['longitude'],":",element['latitude']);
+      //console.log(element['longitude'],":",element['latitude']);
       
       // Calcul des coordonnes x,y suivant la longitude et latitude ainsi que la taille du canvas
       let coor = mercatorXY(width,height,element['longitude'],element['latitude']);
       
       // coor = [x,y]
-      console.log(coor);
+      //console.log(coor);
 
       // On dessine un cercle
       context.beginPath();

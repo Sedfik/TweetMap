@@ -14,8 +14,6 @@
         <header>
             <p style="text-align: left;"> Tweet Map - Projet M1 ISD </p>
         </header>
-        <!-- Frame contenant le formulaire ainsi que les resultats -->
-        <hr>
             
         <!-- Formulaire de filtre des tweets -->
         <div id="formulaire">
@@ -25,13 +23,13 @@
                 <input type="text" id="tweetText1" />
                 <input type="button" value="+" onClick="addInput('tweet-text');">
            </div>
-            <br><br>
+            <br>
             Nom d'utilisateur : <br>
             <input type="text" id="userName" placeholder="User name"/>
-            <br><br>
+            <br>
             Hashtag : <br>
             <input type="text" id="hashtag" placeholder="Hashtag"/>
-            <br><br>
+            <br>
             Liste des pays
             <input type="text" id="search_country" placeholder="Country name" onkeyup="filter_countries()"/>
             <div id="country_checkboxes">
@@ -39,6 +37,7 @@
             <br>
            
             <button onclick="loadDoc()" value="send" id="formButton"> rechercher  <i style="font-size:24px " class="fa">&#xf099;</i> </button>
+            <br><br>
         </div>
         
         <!-- Layout contenant le resultat sous differentes formes -->

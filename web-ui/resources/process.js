@@ -1,3 +1,7 @@
+let page;
+let globalData;
+let mapInitialized = false;
+
 function load() {
   var tweetText1 = document.getElementById("tweetText1");
 
@@ -15,8 +19,6 @@ function load() {
   xhttp.open("GET", "countries", true);
   xhttp.send();
 }
-
-var mapInitialized = false;
 /*
 //TODO 
 On recupere l'ensemble des champs du fichier. 
@@ -51,7 +53,7 @@ function loadDoc() {
   if(country_query != ""){
     query += "&"+country_query;
   }
-
+  
   console.log("query:",query);
 
   // Requette de filtre au serveur
@@ -59,25 +61,30 @@ function loadDoc() {
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
       let res = JSON.parse(this.responseText);
+      
+      globalData = res;
 
-      console.log(res);
       document.getElementById("nbTweets").innerHTML =  res.length;
       //document.getElementById("brutData").innerHTML = JSON.stringify(res);
       
-
       let listDiv = document.getElementById("tweetList");
       console.log("list:" + listDiv);
     
       clearDiv(listDiv);
-      console.error(listDiv.innerHTML);
-      listDiv.appendChild(tweetList(res))
-
+      
+      console.log("json",globalData);
+      
+      listDiv.appendChild(tweetList(0,15));
+      
       // TODO a debuger: Affichage simultane de brutDataDiv et listDiv
       //brutDiv.appendChild();
       
+      console.log("Creation de l'histograme")
       let histDiv = document.getElementById("hist");
       clearDiv(histDiv);
+
       histDiv.appendChild(hist(res,"place_country",600,500));
+      console.log("--- Fin histogramme ---");
 
       let mapDiv = document.getElementById("world_map");
       clearDiv(mapDiv);
@@ -99,31 +106,98 @@ function loadDoc() {
   xhttp.send();
 }
 
-function tweetList(jsonData) {
-   // Creation du tableau contenant les tweets
-   let table = document.createElement("table");
-        
-   // Fonction de remplissage du tableau
-   jsonData.forEach(e => {
-     console.log("Ajout des elements");
-     let tr = document.createElement("tr");
-     table.appendChild(tr)
 
-     let td = document.createElement("td")
+function tweetList(p,TweetPerPage) {
+  page = p;
+  
+  // Creation du tableau contenant les tweets
+  let bigDiv = document.createElement("div");
+  bigDiv.classList.add("grid-container");
+      
+  // Fonction de remplissage de list
+  // 15 c'est le nombre de tweets que j'affiche par page
+  for (let i = TweetPerPage * p; (i < (p+1) * TweetPerPage) && (i < globalData.length) ;i++){
 
-     let userName = e["user_name"];
-     let text = e["text"];
+    let cell = document.createElement("div");
+    cell.classList.add("grid-item");
 
-     td.innerHTML += "<p><strong>" + userName + "</strong></p>"
-                     + "</br><p>"
-                     + text 
-                     + "</p>";
-     
-     tr.appendChild(td)
+    console.log("Ajout des elements");
+    let userName = globalData[i]["user_name"];
+    let text = globalData[i]["text"];
 
-   });
-   return table;
+    let content =  document.createElement("div");
+    content.classList.add("interiorContent")
+    content.innerHTML += '<p> <i style="font-size:16px " class="fa">&#xf099;</i> <strong>' 
+                          + userName + "</strong></p>"
+                    + "</br><p>"
+                    + text 
+                    + "</p>";
+
+    cell.appendChild(content);
+    bigDiv.appendChild(cell);
+
+  }
+
+   //manipulation de la pagination
+   pageVisibility();
+ 
+   return bigDiv;
 }
+
+
+function pageVisibility() {
+  //affichage de la pagination si le contenu est suffisant
+  if (globalData.length > 15){
+    console.log("display");
+    document.getElementById("pagination").style.display = "block";
+    console.log(document.getElementById("pagination").style.display);
+  }
+  else{
+    document.getElementById("pagination").style.display = "none";
+  }
+
+  //premiére page 
+  if (page == 0 ) {
+    var leftArrow = document.getElementById("la");
+    leftArrow.classList.add("nonClickable");
+    leftArrow.style.color = "grey";
+  }
+
+  //derniére page 
+  if ((page+1) * 15 > globalData.length) {
+    var rightArrow = document.getElementById("ra");
+    rightArrow.classList.add("nonClickable");
+    rightArrow.style.color = "grey";   
+  
+  } else{
+
+    var rightArrow = document.getElementById("ra");
+    rightArrow.classList.remove("nonClickable");
+    rightArrow.style.color = "black";   
+  }
+
+  // toutes les pages sauf la premiére
+  if (page > 0) {
+    var leftArrow = document.getElementById("la");
+    leftArrow.classList.remove("nonClickable");
+    leftArrow.style.color = "black";
+  }
+
+}
+
+function nextPage(){
+  let list = document.getElementById("tweetList");
+  clearDiv(list);
+  list.appendChild(tweetList(page+1,15));
+}
+
+function prevPage(){
+  let list = document.getElementById("tweetList");
+  clearDiv(list);
+  list.appendChild(tweetList(page-1,15));
+  
+}
+
 
 /**
  * Fonction de creation des checkbox en fonction des pays recupere du serveur.
@@ -189,6 +263,7 @@ function get_country_query() {
   }
   return query.slice(0,-1);
 }
+
 
 /**
  * Affiche les donnees brut dans un tableau
@@ -329,6 +404,7 @@ function clearDiv(div) {
   } catch (error) {
     console.error(error);
   }
+  console.log("End clearing");
 }
 
 function size_dict(d){c=0; for (i in d) ++c; return c}

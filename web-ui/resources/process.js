@@ -6,6 +6,9 @@ let mapInitialized = false;
 let counter = 1;
 let LIMIT = 3;
 
+let colors = ['#4CAF50', '#00BCD4', '#E91E63', '#FFC107', '#9E9E9E', '#CDDC39', '#08088A', '#F44336', '#FFF59D', '#6D4C41'];
+
+
 function load() {
   var tweetText1 = document.getElementById("tweetText1");
 
@@ -85,7 +88,7 @@ function loadDoc() {
       let pieDiv = document.getElementById("pieChart");
       clearDiv(pieDiv);
 
-      let pieHashtag = drawPie(res,"hashtag_0",400,400);
+      let pieHashtag = drawPie(res,"hashtag_0",1000,600);
 
       pieDiv.appendChild(pieHashtag);
 
@@ -371,6 +374,7 @@ function hist(jsonData,columnName,width,height) {
 
   let number; // Valeur d'une clef du dictionnaire
 
+  let i = 0;
   // Pour chaque clefs dans le dictionnaire
   for(key in dict){
     number = dict[key] * yRatio; 
@@ -379,20 +383,25 @@ function hist(jsonData,columnName,width,height) {
 
     // On dessine le rectangle correspondant
     //rect(x:, y: on part de l'origine, on ajoute la difference entre la taille max et la valeur du nombre d'occurence, xWidth, yHeigth)
-    context.rect(x, yOrigin + rectMaxHeight - number, rectWidth, number);
+    context.fillStyle = colors[i%colors.length];
+    context.fillRect(x, yOrigin + rectMaxHeight - number, rectWidth, number);
+   
+    i++;
+    
     //console.log("draw rect(",x,",",yOrigin + rectMaxHeight-number,",",rectWidth,",",number  ,")");
     
     // On ecrit le nombre d'occurences
+    context.fillStyle = "black";
     context.fillText(dict[key],x,yOrigin + rectMaxHeight-number-5);
     
     // / / Nom de la clef ecrit suivant une rotation 
     // On sauvegarde le contexte actuel
     context.save();
     // On decale le context mettant les origines en bas du graph et on laisse de la place pour ecrire la clef
-    context.translate(x+(rectWidth/2), yOrigin + rectMaxHeight+ key.length +40); // key.lenght bizare -> TODO a tester
-    //console.log("length",key,":",key.length);
+    context.translate(x+(rectWidth/2), yOrigin + rectMaxHeight + 5);
+    console.log("length",key,":",key.toString().length);
     // On tourne
-    context.rotate(-Math.PI/2);
+    context.rotate(Math.PI/2);
     // On ecrit le text
     context.fillText(key, 0,0);
     // On recupere le contexte precedement sauvgarde
@@ -426,19 +435,23 @@ function clearDiv(div) {
 }
 
 
-
+// Aide de https://www.codeblocq.com/2016/04/Create-a-Pie-Chart-with-HTML5-canvas/
 function drawPie(jsonData, columnName , width, height) {
+  
   let canva = document.createElement("canvas");
   canva.width = width;
   canva.height = height;
   let context = canva.getContext("2d");
 
   // Le centre du cercle
-  let xCenter, yCenter;
+  let xCenter, yCenter, pieRadius;
 
   xCenter = width / 3;
-  yCenter = height / 3;
+  yCenter = height / 2;
 
+ 
+  pieRadius = Math.min(xCenter-(width/15),yCenter-(height/15));
+  console.log(xCenter-(width/15),yCenter-(height/15));
   // Creation d'un dictionnaire qui pour chaque pays donne le nombre de tweets -> { "France": "12" }
   let dict = {}
   jsonData.forEach(element => {
@@ -454,56 +467,62 @@ function drawPie(jsonData, columnName , width, height) {
   });
   // Fonction de calcul de la somme des valeurs d'un dictionnaire
   let valuesSumOfDict = Object.keys(dict).reduce(( (acc,cur) => dict[cur] + acc),0)  
-  console.log("sum",valuesSumOfDict);
-  console.log(dict);
-
+  
   let beginAngle = 0;
   let endAngle = 0;
 
-  let xText = 300;
-  let yText = 50;
+  let offset = 10;
+
+  let offsetX, offsetY, medianAngle;
+
+  let xText = (2/3)*width;
+  let yText = (1/5)*height;
 
   let rectSize = 10;
+
+  let i = 0;
 
   for(key in dict){
 
     console.log(dict[key]);
   
-    let angle = 2 * Math.PI * (dict[key] * 100 / valuesSumOfDict);
+    let angle = Math.PI * (dict[key] * 2 / valuesSumOfDict);
   
-    console.log("beginangle",angle);
-
     beginAngle = endAngle;
 
     endAngle += angle;
 
-    
+    medianAngle = (endAngle + beginAngle) / 2;
+
+    offsetX = Math.cos(medianAngle) * offset;
+    offsetY = Math.sin(medianAngle) * offset;
+
     context.beginPath();
+    context.fillStyle = colors[i%colors.length];
+    console.log(context.fillStyle);
+
+    context.moveTo(xCenter + offsetX, yCenter + offsetY);
+    context.arc(xCenter + offsetX, yCenter + offsetY, pieRadius,beginAngle,endAngle);
+    context.lineTo(xCenter + offsetX, yCenter + offsetY);
+    context.stroke();
+
+    context.fill();
 
 
-
-    context.moveTo(xCenter,yCenter);
-
-    context.arc(xCenter,yCenter,100,beginAngle,endAngle);
-    context.lineTo(xCenter,yCenter);
-
-
+    context.beginPath();
     context.rect(xText, yText - rectSize, rectSize, rectSize);
-    
-    context.fillText(key,xText + rectSize + 5,yText );
-    
+    context.fillText(key,xText + rectSize + 5,yText);
     yText += 2*rectSize;
-    context.stroke()
+    
+    context.fillStyle = colors[i%colors.length];    
+    context.fill();
+
+
+    i++;
   }
   
   return canva;
 }
-
-
-function drawKeys(canvas, dict,xStart, yStart, xMax, yMax) {
-
-}
-
 
 
 function size_dict(d){c=0; for (i in d) ++c; return c}

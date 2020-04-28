@@ -1,4 +1,6 @@
 import pandas as pd
+from functools import reduce
+import numpy as np
 import re
 import os
 import config
@@ -32,11 +34,12 @@ def get_column_values(data_frame, column):
 
 """
 # Filtre le data frame suivant le parametre et ses valeurs
-# Le filtre fait un OU inclusif.
+# Le filtre fait un OU inclusif pour les valeurs d'un meme champs.
 # La gestion des NaN " param='' " se fait par un isnull() de panda
+# Retourne la liste du filtre -> [True, True, False, True, ... , False, False, True]
 # parametre : data_frame
 # parametre : parameter -> Le parametre ex: "place_country_code"
-# parametre : values    -> Les valeurs du parametre ex ["fr","us","en,]  
+# parametre : values    -> Les valeurs du parametre ex ["fr","us","en"]  
 """
 def filter(data_frame, parameter, values):
     keep_undefined = 'null' in values
@@ -44,8 +47,9 @@ def filter(data_frame, parameter, values):
     print("keep undefined",keep_undefined)
 
     patern = re.compile("|".join(values))
-
-    return data_frame[ data_frame[parameter].str.contains(patern,na=keep_undefined) ]
+    
+    return data_frame[parameter].str.contains(patern,na=keep_undefined)
+    
 
 """
 # Retourne la liste des tweets suivants les parametres
@@ -53,11 +57,16 @@ def filter(data_frame, parameter, values):
 # parametre : parameters -> la liste des parametres sous forme: {'params1': ['value1'],'params2': ['value1','value2']}
 """
 def get_tweets_query(data_frame,parameters):
-    for p in parameters:
-        data_frame = filter(data_frame,p,parameters[p])
+    # Recupere l'ensemble des filtres dans un tableau
+    filters_list = np.array([filter(data_frame,p,parameters[p]) for p in parameters])
+    
+    # Si il n'y as qu'un filtre on l'utilise directement
+    if(len(filters_list) < 2):
+        data_frame = data_frame[filters_list[0]]
+    else:
+        data_frame = data_frame[reduce(lambda x, acc: x | acc, filters_list)]
 
-    return str(data_frame.to_json(orient="records"))
-
+    return data_frame.to_json(orient="records")
 
 """
 [['user_id','user_name','user_screen_name','user_followers_count']]

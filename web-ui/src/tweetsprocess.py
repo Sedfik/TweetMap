@@ -4,6 +4,7 @@ import numpy as np
 import re
 import os
 import config
+from datetime import datetime
 
 # Lire le fichier donne en tant que dataframe depuis le chemin absolu du projet
 def get_file_dataframe(path):
@@ -52,9 +53,26 @@ def filter(data_frame, parameter, values):
     if parameter == "hashtag":
         hash = np.logical_or(data_frame["hashtag_0"] == values[0],
                np.logical_or(data_frame["hashtag_1"] == values[0],
-               data_frame["hashtag_2"] == values[0]))
+               data_frame["hashtag_2"] == values[0]));
 
-        return hash
+        return hash;
+
+
+    if parameter == "minAbo":
+        return data_frame["user_followers_count"] >= int(values[0]);
+
+    if parameter == "maxAbo":
+        return data_frame["user_followers_count"] <= int(values[0]); 
+
+    if parameter == "minDate":
+        DateToSimpleDate = [datetime.strptime(d.split('T')[0],'%Y-%m-%d') for d in data_frame["date"]]
+        return [dd >= datetime.strptime(values[0],'%Y-%m-%d') for dd in DateToSimpleDate]
+
+    if parameter == "maxDate":
+        DateToSimpleDate = [datetime.strptime(d.split('T')[0],'%Y-%m-%d') for d in data_frame["date"]]
+        return [dd <= datetime.strptime(values[0],'%Y-%m-%d') for dd in DateToSimpleDate]
+   
+
 
     return data_frame[parameter].str.contains(patern,na=keep_undefined)
     

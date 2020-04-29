@@ -115,14 +115,22 @@ function loadDoc() {
 
 
 function get_text_query() {
-   // Recuperation des champs de recheche
+   // Recuperation des champs de recherche
    let query = [];
+   // Recuperation du champ query text
    for (let i = 1; i <= counter; i++) {
      let tweetText = document.getElementById("tweetText"+i);
      
      query.push("text="+tweetText.value);
      
    }
+
+   // Recuperation du champs du userName
+   let un = document.getElementById("userName");
+   let hash = document.getElementById("hashtag")
+   query.push("user_name="+un.value)
+   query.push("hashtag="+hash.value)
+
    return query.join("&");
 }
 

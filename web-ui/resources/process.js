@@ -37,7 +37,10 @@ Dans la query on récupère tous les elements du doc avec id=nomColonne
 
 let get_query_functions = [
   get_text_query,
-  get_country_query
+  get_country_query,
+  get_publication_date_query,
+  get_followers_query
+
 ];
 
 function get_query() {
@@ -127,12 +130,52 @@ function get_text_query() {
 
    // Recuperation du champs du userName
    let un = document.getElementById("userName");
-   let hash = document.getElementById("hashtag")
-   query.push("user_name="+un.value)
-   query.push("hashtag="+hash.value)
+   let hash = document.getElementById("hashtag");
+
+   query.push("user_name="+un.value);
+   query.push("hashtag="+hash.value);
 
    return query.join("&");
 }
+
+ function get_followers_query(){
+   let query = [];
+   // Recuperation des champs de nombre d'abonnés
+   let minAbo = document.getElementById("minAbo").value;
+   let maxAbo = document.getElementById("maxAbo").value;
+   let tmp = 0;
+
+   if (minAbo > maxAbo){
+    tmp = minAbo;
+    minAbo = maxAbo;
+    maxAbo = tmp;
+   }
+
+   query.push("minAbo="+minAbo);
+   query.push("maxAbo="+maxAbo);
+
+   return query.join("&");
+ }
+
+ function get_publication_date_query(){
+   let query = [];
+   // Recuperation des champs de nombre d'abonnés
+   let minDate = document.getElementById("minDate").value;
+   let maxDate = document.getElementById("maxDate").value;
+   let tmp = 0;
+
+   if ((new Date(minDate).getTime() > new Date(maxDate).getTime())){
+    tmp = minDate;
+    minDate = maxDate;
+    maxDate = tmp
+   }
+
+   query.push("minDate="+minDate);
+   query.push("maxDate="+maxDate);
+
+   return query.join("&");
+ }
+
 
 
 function tweetList(p,TweetPerPage) {
@@ -176,6 +219,7 @@ function tweetList(p,TweetPerPage) {
 function pageVisibility() {
   //affichage de la pagination si le contenu est suffisant
   if (globalData.length > 15){
+    document.getElementById("pg").innerHTML = page+1;
     console.log("display");
     document.getElementById("pagination").style.display = "block";
     console.log(document.getElementById("pagination").style.display);

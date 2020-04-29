@@ -27,12 +27,25 @@
                 <input type="button" value="+" class="plusBtn" onClick="addInput('tweet-text');">
            </div>
             <br>
+
             Nom d'utilisateur : <br>
             <input type="text" id="userName" placeholder="User name"/>
             <br>
+
             Hashtag : <br>
             <input type="text" id="hashtag" placeholder="Hashtag"/>
             <br>
+
+             Nombre d'Abonnés : <br>
+            <input type="number" id="minAbo" min="0" max="113000000" placeholder="Min" />
+            <input type="number" id="maxAbo" min="0" max="113000000" placeholder="Max" />
+            <br>
+
+             Date de publication : <br>
+            <input placeholder="Min" class="textbox-n dt" type="text" onfocus="(this.type='date')" onblur="(this.type='text')" id="minDate" />
+            <input placeholder="Max" class="textbox-n dt" type="text" onfocus="(this.type='date')" onblur="(this.type='text')" id="maxDate" />
+            <br>
+
             Liste des pays
             <input type="text" id="search_country" placeholder="Country name" onkeyup="filter_countries()"/>
             <div id="country_checkboxes">
@@ -111,6 +124,7 @@
             </div>
             <div id="pagination">
                 <a href="#" id="la" onclick="prevPage()"><</a>
+                <span id = "pg"></span>
                 <a href="#" id="ra" onclick="nextPage()">></a>
             </div>
 

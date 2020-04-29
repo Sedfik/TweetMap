@@ -47,7 +47,15 @@ def filter(data_frame, parameter, values):
     print("keep undefined",keep_undefined)
 
     patern = re.compile("|".join(values))
-    
+
+    #le cas des hashtags on compare avec les 3 columns (OR)
+    if parameter == "hashtag":
+        hash = np.logical_or(data_frame["hashtag_0"] == values[0],
+               np.logical_or(data_frame["hashtag_1"] == values[0],
+               data_frame["hashtag_2"] == values[0]))
+
+        return hash
+
     return data_frame[parameter].str.contains(patern,na=keep_undefined)
     
 
@@ -59,12 +67,13 @@ def filter(data_frame, parameter, values):
 def get_tweets_query(data_frame,parameters):
     # Recupere l'ensemble des filtres dans un tableau
     filters_list = np.array([filter(data_frame,p,parameters[p]) for p in parameters])
-    
+    #print(filters_list)
     # Si il n'y as qu'un filtre on l'utilise directement
     if(len(filters_list) < 2):
         data_frame = data_frame[filters_list[0]]
     else:
         data_frame = data_frame[reduce(lambda x, acc: x & acc, filters_list)]
+
 
     return data_frame.to_json(orient="records")
 

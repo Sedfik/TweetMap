@@ -13,6 +13,7 @@ def get_file_dataframe(path):
     except FileNotFoundError as exception:
         print(exception) 
 
+# Retourne l'ensemble des tweets
 def get_tweets(data_frame):
     if data_frame == None:
         raise ValueError("Empty data frame")
@@ -51,18 +52,17 @@ def filter(data_frame, parameter, values):
 
     #le cas des hashtags on compare avec les 3 columns (OR)
     if parameter == "hashtag":
-        hash = np.logical_or(data_frame["hashtag_0"] == values[0],
+        hashtags = np.logical_or(data_frame["hashtag_0"] == values[0],
                np.logical_or(data_frame["hashtag_1"] == values[0],
-               data_frame["hashtag_2"] == values[0]));
+               data_frame["hashtag_2"] == values[0]))
 
-        return hash;
-
+        return hashtags
 
     if parameter == "minAbo":
-        return data_frame["user_followers_count"] >= int(values[0]);
+        return data_frame["user_followers_count"] >= int(values[0])
 
     if parameter == "maxAbo":
-        return data_frame["user_followers_count"] <= int(values[0]); 
+        return data_frame["user_followers_count"] <= int(values[0])
 
     if parameter == "minDate":
         DateToSimpleDate = [datetime.strptime(d.split('T')[0],'%Y-%m-%d') for d in data_frame["date"]]
@@ -72,7 +72,6 @@ def filter(data_frame, parameter, values):
         DateToSimpleDate = [datetime.strptime(d.split('T')[0],'%Y-%m-%d') for d in data_frame["date"]]
         return [dd <= datetime.strptime(values[0],'%Y-%m-%d') for dd in DateToSimpleDate]
    
-
 
     return data_frame[parameter].str.contains(patern,na=keep_undefined)
     

@@ -1,59 +1,69 @@
-let page;
-let globalData;
-let mapInitialized = false;
+// Variables globales
+let page; // Le numéro de page courant
+let globalData; // Les données reçu
+let mapInitialized = false; // Permet d'éviter d'initialiser la carte 2 fois.
 
 
-let counter = 1;
-let LIMIT = 3;
+let counter = 1;  // Le nombre de champs "text" actuel
+let LIMIT = 3; // Le nombre permit
 
+// List de couleurs pour les graphes
 let colors = ['#4CAF50', '#00BCD4', '#E91E63', '#FFC107', '#9E9E9E', '#CDDC39', '#08088A', '#F44336', '#FFF59D', '#6D4C41'];
 
 
+/**
+ * Fonction appellee au chargement de la page
+ * La fonction va récupérer l'ensemble des pays puis les afficher dans une div de checkbox
+ */
 function load() {
-  var tweetText1 = document.getElementById("tweetText1");
+  let tweetText1 = document.getElementById("tweetText1");
 
-  var checkboxes = document.getElementById("country_checkboxes");
+  // Recuperation de la div
+  let checkboxes = document.getElementById("country_checkboxes");
   console.log("creation de la liste des pays");
+  
+  // Requette ascynchrone
   let xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
-    console.log(this.readyState);
-    if (this.readyState == 4 && this.status == 200) {
+    if (this.readyState == 4 && this.status == 200) { // Quand on recoit la reponse
       let res = JSON.parse(this.responseText);
-      console.log(res)
+      
+      // On remplit la div
       checkboxes.appendChild(create_country_checkboxes(res));
     }
   };
+  // On demande l'ensemble des pays
   xhttp.open("GET", "countries", true);
   xhttp.send();
 }
-/*
-//TODO 
-On recupere l'ensemble des champs du fichier. 
-On les mets dans un tableau
-Pour chaque nom de colonne on crée un nouveau formulaire suivant ces noms
-Dans la query on récupère tous les elements du doc avec id=nomColonne
-*/
 
-
+/**
+ * Tableau de l'ensemble des fonctions permettants de recuperer la requette
+ * Chaque fonction renvoie une String de forme : "param1=value1&param1=value2" ou "" si aucun champs n'est rempli
+ */
 let get_query_functions = [
   get_text_query,
   get_country_query,
   get_publication_date_query,
   get_followers_query
-
 ];
 
+/**
+ * Fonction appelant l'ensemble des fonctions definies dans le tableau precedant
+ * Retourne l'ensemble une String reunissant l'ensemble des requettes
+ */
 function get_query() {
   let queries = get_query_functions.map(f => f());
 
   return queries.join("&");
 }
 
-function loadDoc() {
+/**
+ * Fonction principale appliquant le filtre du formulaire sur les donnees
+ */
+function apply_filter() {
 
-  console.log(tweetText1);
-  // TODO Gestion des inputs frauduleuses de l'utilisateur (caracteres speciaux...) 
-  
+  // Recuperation de la requette
   let query = get_query();
   
   console.log("query:",query);
@@ -66,36 +76,33 @@ function loadDoc() {
       
       globalData = res;
 
-      document.getElementById("nbTweets").innerHTML =  res.length;
-      //document.getElementById("brutData").innerHTML = JSON.stringify(res);
+      document.getElementById("nbTweets").innerHTML =  res.length; // Affichage du nombre de tweets trouve
       
+      // Affichage des tweets sous forme de liste
       let listDiv = document.getElementById("tweetList");
       console.log("list:" + listDiv);
     
-      clearDiv(listDiv);
+      clearDiv(listDiv); // On clear la div
       
-      console.log("json",globalData);
+      listDiv.appendChild(tweetList(0,15)); // Ajout de la div a la page avec un affichage de 15 tweets par page
       
-      listDiv.appendChild(tweetList(0,15));
-      
-      // TODO a debuger: Affichage simultane de brutDataDiv et listDiv
-      //brutDiv.appendChild();
-      
+      // Creation et affichage de l'histograme
       console.log("Creation de l'histograme")
       let histDiv = document.getElementById("hist");
       clearDiv(histDiv);
 
-      histDiv.appendChild(hist(res,"place_country",600,500));
+      histDiv.appendChild(hist(res,"place_country",600,500)); // Histograme sur les pays
       console.log("--- Fin histogramme ---");
 
+      // Creation et affichage du diagramme camembert
       let pieDiv = document.getElementById("pieChart");
       clearDiv(pieDiv);
 
-      let pieHashtag = drawPie(res,"hashtag_0",1000,600);
+      let pieHashtag = drawPie(res,"hashtag_0",1000,600); // Camembert sur les hashtag
 
       pieDiv.appendChild(pieHashtag);
 
-
+      // Creation et affichage de la carte
       let mapDiv = document.getElementById("world_map");
       clearDiv(mapDiv);
       
@@ -103,20 +110,26 @@ function loadDoc() {
       let mapCanva = drawMap(res,1000,500);
       
       mapDiv.appendChild(mapCanva);
+
     }
   };
+
+  // Requette au serveur
   xhttp.open("GET", "tweets?"+query, true);
   
+  // Fixation du timeout
   xhttp.timeout = 1500
   xhttp.ontimeout = () => {
-    console.error('Timeout!!')
-    alert("Request Timeout")
+    console.error('Error: Request Timeout.')
+    alert("Error: Request Timeout");
   };
 
   xhttp.send();
 }
 
-
+/**
+ * Fonction de recuperation des champs text
+ */
 function get_text_query() {
    // Recuperation des champs de recherche
    let query = [];
@@ -138,46 +151,95 @@ function get_text_query() {
    return query.join("&");
 }
 
- function get_followers_query(){
-   let query = [];
-   // Recuperation des champs de nombre d'abonnés
-   let minAbo = document.getElementById("minAbo").value;
-   let maxAbo = document.getElementById("maxAbo").value;
-   let tmp = 0;
+/**
+ * Fonction de recuperation du nombre de followers
+ */
+function get_followers_query(){
+  let query = [];
+  // Recuperation des champs de nombre d'abonnés
+  let minAbo = document.getElementById("minAbo").value;
 
-   if (minAbo > maxAbo){
-    tmp = minAbo;
-    minAbo = maxAbo;
-    maxAbo = tmp;
-   }
+  // Par defaut min = 0
+  minAbo = minAbo == "" ? 0 : minAbo;
 
-   query.push("minAbo="+minAbo);
-   query.push("maxAbo="+maxAbo);
+  let maxAbo = document.getElementById("maxAbo").value;
+  
+  // Par defaut max = infini 
+  maxAbo = maxAbo == "" ? 9999999999 : maxAbo;
 
-   return query.join("&");
- }
+  query.push("minAbo="+minAbo);
+  query.push("maxAbo="+maxAbo);
 
- function get_publication_date_query(){
-   let query = [];
-   // Recuperation des champs de nombre d'abonnés
-   let minDate = document.getElementById("minDate").value;
-   let maxDate = document.getElementById("maxDate").value;
-   let tmp = 0;
+  return query.join("&");
+}
 
-   if ((new Date(minDate).getTime() > new Date(maxDate).getTime())){
-    tmp = minDate;
-    minDate = maxDate;
-    maxDate = tmp
-   }
+/**
+ * Fonction de recuperation des champs de date 
+ */
+function get_publication_date_query(){
+  let query = [];
+  // Recuperation des champs de nombre d'abonnés
+  let minDate = document.getElementById("minDate").value;
+  let maxDate = document.getElementById("maxDate").value;
+  let tmp = 0;
 
-   query.push("minDate="+minDate);
-   query.push("maxDate="+maxDate);
+  if ((new Date(minDate).getTime() > new Date(maxDate).getTime())){
+   tmp = minDate;
+   minDate = maxDate;
+   maxDate = tmp
+  }
 
-   return query.join("&");
- }
+  query.push("minDate="+minDate);
+  query.push("maxDate="+maxDate);
+
+  return query.join("&");
+}
+
+/**
+ * Fonction pour récupérer les pays selectionnes sous forme de parametre
+ * ex: place_country_code=fr&place_contry_code=en
+ */
+function get_country_query() {
+  let query = [];
+  let i = 0;
+
+  let country = document.getElementById("country"+i);
+  console.log(country);
+
+  while(country != null){
+    if(country.checked){
+      query.push("place_country_code="+country.name);
+    }
+    i++;
+    country = document.getElementById("country"+i);
+  }
+  return query.join("&");
+}
+
+/**
+ * Fonction de verification des champs text 
+ * Les champs ne doivent pas contenir &
+ * @param {*} id L'id du champs 
+ */
+function checkField(id) {
+  console.log(id);
+  let field = document.getElementById(id);
+
+  // Si on trouve & on alerte l'utilisateur
+  if(field.value.includes("&")){
+    field.style.boxShadow = "0px 5px 10px yellow";
+  } else {
+    field.style.boxShadow = "0px 5px 10px grey";
+  }
+}
 
 
 
+/**
+ * Creation d'une div contenant la liste des tweets trouves
+ * @param {*} p  la page courante
+ * @param {*} TweetPerPage Le nombre de tweets par page
+ */
 function tweetList(p,TweetPerPage) {
   page = p;
   
@@ -215,7 +277,9 @@ function tweetList(p,TweetPerPage) {
    return bigDiv;
 }
 
-
+/**
+ * Affichage des tweets suivant la page 
+ */
 function pageVisibility() {
   //affichage de la pagination si le contenu est suffisant
   if (globalData.length > 15){
@@ -257,12 +321,14 @@ function pageVisibility() {
 
 }
 
+/**Fonction de changement de page */
 function nextPage(){
   let list = document.getElementById("tweetList");
   clearDiv(list);
   list.appendChild(tweetList(page+1,15));
 }
 
+/**Fonction de changement de page */
 function prevPage(){
   let list = document.getElementById("tweetList");
   clearDiv(list);
@@ -283,10 +349,11 @@ function create_country_checkboxes(jsonData) {
 
   let i = 0;
 
-  jsonData.forEach(country_code => {
+  jsonData.forEach(country_code => { // Pour chaque code pays
     
     let li = document.createElement("li");
 
+    // On ajout un input de type checkbox
     let checkbox = document.createElement("input")
     
     checkbox.type = "checkbox";
@@ -312,30 +379,10 @@ function create_country_checkboxes(jsonData) {
 
     ul.appendChild(li);
   });
-
+  // On retourne la div creee
   return ul;
 }
 
-/**
- * Fonction pour récupérer les pays selectionnes sous forme de parametre
- * ex: place_country_code=fr&place_contry_code=en
- */
-function get_country_query() {
-  let query = [];
-  let i = 0;
-
-  let country = document.getElementById("country"+i);
-  console.log(country);
-
-  while(country != null){
-    if(country.checked){
-      query.push("place_country_code="+country.name);
-    }
-    i++;
-    country = document.getElementById("country"+i);
-  }
-  return query.join("&");
-}
 
 
 /**
@@ -374,6 +421,16 @@ function brutData(jsonData) {
   return table;
 }
 
+
+/**
+ * Fonction de recuperation de la valeur maximale du dictionnaire
+ * ex: { "France": 12, "Espagne":23 } -> maxOfDict retourne 23
+ */
+function maxOfDict(dict) {
+  return Object.keys(dict).reduce(( (acc,cur) => dict[cur] > acc ? dict[cur] : acc),0)  
+}
+  
+
 /**
  * Fonction de creation d'un canvas contenant un histograme sur une colonne.
  * @param {*} jsonData les donnees
@@ -381,7 +438,6 @@ function brutData(jsonData) {
  * @param {*} width la largeur du canvas
  * @param {*} height la hauteur du canvas
  */
-
 function hist(jsonData,columnName,width,height) {
   
   // Creation du canvas et definition de sa taille
@@ -392,15 +448,15 @@ function hist(jsonData,columnName,width,height) {
   
   // Creation d'un dictionnaire qui pour chaque pays donne le nombre de tweets -> { "France": "12" }
   let dict = {}
+
   jsonData.forEach(element => {
     let columnValue = element[columnName];
-    if(typeof dict[columnValue] == 'undefined'){
-      dict[columnValue] = 1;
-      //console.log("initialize",columnValue)
+    
+    if(typeof dict[columnValue] == 'undefined'){ // Si c'est la premiere fois que l'on voit cette clef
+      dict[columnValue] = 1; // On initialise la valeur
     }
-    else{
-      dict[columnValue] += 1;
-      //console.log("addTo",columnValue)
+    else{ // Clef deja connue
+      dict[columnValue] += 1; // On incremente
     }
   });
   
@@ -413,17 +469,14 @@ function hist(jsonData,columnName,width,height) {
   let rectMaxHeight = (canva.height -100); // La taille maximale d'un rectangle
   let rectWidth = (canva.width - 100) / size_dict(dict); // La largeur maximale d'un rectangle defini par le nombre d'entrees dans le dictionnaire
 
+  
   // Fonction de recuperation de la valeur maximale du dictionnaire
   // ex: { "France": 12, "Espagne":23 } -> maxOfDict retourne 23
-  let maxOfDict = Object.keys(dict).reduce(( (acc,cur) => dict[cur] > acc ? dict[cur] : acc),0)  
-  //console.log("max",maxOfDict);
-
+  let  maxDict = maxOfDict(dict);  
   
-  let yRatio = rectMaxHeight / maxOfDict; // Definition du ratio que vaut 1 "point" afin de calculer la hauteur du rectangle dans le canvas
-  //console.log("yR",yRatio);
-
-  //console.log("canvas width",canva.width);
-
+  
+  let yRatio = rectMaxHeight / maxDict; // Definition du ratio que vaut 1 "point" afin de calculer la hauteur du rectangle dans le canvas
+  
   let number; // Valeur d'une clef du dictionnaire
 
   let i = 0;
@@ -431,16 +484,12 @@ function hist(jsonData,columnName,width,height) {
   for(key in dict){
     number = dict[key] * yRatio; 
     
-    //console.log("number",key,":",number);
-
     // On dessine le rectangle correspondant
     //rect(x:, y: on part de l'origine, on ajoute la difference entre la taille max et la valeur du nombre d'occurence, xWidth, yHeigth)
     context.fillStyle = colors[i%colors.length];
     context.fillRect(x, yOrigin + rectMaxHeight - number, rectWidth, number);
    
     i++;
-    
-    //console.log("draw rect(",x,",",yOrigin + rectMaxHeight-number,",",rectWidth,",",number  ,")");
     
     // On ecrit le nombre d'occurences
     context.fillStyle = "black";
@@ -471,7 +520,6 @@ function hist(jsonData,columnName,width,height) {
 
 /**
  * Efface tous les noeuds fils d'une div 
- * 
  * @param {*} div la div a clear 
  */
 function clearDiv(div) {
@@ -487,7 +535,16 @@ function clearDiv(div) {
 }
 
 
-// Aide de https://www.codeblocq.com/2016/04/Create-a-Pie-Chart-with-HTML5-canvas/
+
+/**
+ * Fonction de creation d'un Pie chart suivant une colonne des donnees
+ * Aide de https://www.codeblocq.com/2016/04/Create-a-Pie-Chart-with-HTML5-canvas/
+ * 
+ * @param {*} jsonData Les donnees
+ * @param {*} columnName Le nom de la colonne 
+ * @param {*} width La largeur du canvas
+ * @param {*} height La hauteur du canvas
+ */
 function drawPie(jsonData, columnName , width, height) {
   
   let canva = document.createElement("canvas");
@@ -498,61 +555,70 @@ function drawPie(jsonData, columnName , width, height) {
   // Le centre du cercle
   let xCenter, yCenter, pieRadius;
 
-  xCenter = width / 3;
-  yCenter = height / 2;
+  xCenter = width / 3; // Le centre du cercle est au premier tier en abscisse
+  yCenter = height / 2; // La moitie en ordonnee
 
  
-  pieRadius = Math.min(xCenter-(width/15),yCenter-(height/15));
+  pieRadius = Math.min(xCenter-(width/15),yCenter-(height/15)); // Le rayon est de la distance (centre - bord) avec un bord relatif de 1/15 par rapport au reelles dimensions
+  
   console.log(xCenter-(width/15),yCenter-(height/15));
-  // Creation d'un dictionnaire qui pour chaque pays donne le nombre de tweets -> { "France": "12" }
+  
+  // Creation d'un dictionnaire d'occurence, similaire a celui de l'histograme
   let dict = {}
   jsonData.forEach(element => {
     let columnValue = element[columnName];
+
     if(typeof dict[columnValue] == 'undefined'){
       dict[columnValue] = 1;
-      //console.log("initialize",columnValue)
     }
     else{
       dict[columnValue] += 1;
-      //console.log("addTo",columnValue)
     }
   });
+
   // Fonction de calcul de la somme des valeurs d'un dictionnaire
   let valuesSumOfDict = Object.keys(dict).reduce(( (acc,cur) => dict[cur] + acc),0)  
   
+  // Variable d'angle
   let beginAngle = 0;
   let endAngle = 0;
 
-  let offset = 10;
+  let offset = 10; // Definition de l'ecart entre les parts
 
   let offsetX, offsetY, medianAngle;
 
+  // Position du text
   let xText = (2/3)*width;
   let yText = (1/5)*height;
 
-  let rectSize = 10;
+  let rectSize = 10; // Taille d'un rectangle d'info
 
   let i = 0;
 
-  for(key in dict){
+  for(key in dict){ // Pour chaques elements du dict
 
     console.log(dict[key]);
   
-    let angle = Math.PI * (dict[key] * 2 / valuesSumOfDict);
+    // Un cercle etant d'angle 2pi, on effectue un produit en croix afin de connaitre l'angle de notre valeur
+    let angle = Math.PI * (dict[key] * 2 / valuesSumOfDict); 
   
     beginAngle = endAngle;
 
     endAngle += angle;
 
+    // Milieu de notre part
     medianAngle = (endAngle + beginAngle) / 2;
 
+    // L'offsetXY est: de combien nous raprochons nous de l'angle median 
     offsetX = Math.cos(medianAngle) * offset;
     offsetY = Math.sin(medianAngle) * offset;
 
+    // On change de couleur
     context.beginPath();
     context.fillStyle = colors[i%colors.length];
     console.log(context.fillStyle);
 
+    // On dessine la part
     context.moveTo(xCenter + offsetX, yCenter + offsetY);
     context.arc(xCenter + offsetX, yCenter + offsetY, pieRadius,beginAngle,endAngle);
     context.lineTo(xCenter + offsetX, yCenter + offsetY);
@@ -560,7 +626,7 @@ function drawPie(jsonData, columnName , width, height) {
 
     context.fill();
 
-
+    // On dessine le label (la clef) associe
     context.beginPath();
     context.rect(xText, yText - rectSize, rectSize, rectSize);
     context.fillText(key,xText + rectSize + 5,yText);
@@ -569,14 +635,13 @@ function drawPie(jsonData, columnName , width, height) {
     context.fillStyle = colors[i%colors.length];    
     context.fill();
 
-
     i++;
   }
   
   return canva;
 }
 
-
+/** Retourne la taille d'un dictionnaire */
 function size_dict(d){c=0; for (i in d) ++c; return c}
 
 /**
@@ -638,26 +703,58 @@ function mercatorXY(width,height,longitude,latitude) {
   return [x,y];
 }
 
+/**
+ * Ajout d'un input text au formulaire
+ * @param {*} divName 
+ */
 function addInput(divName){
      if (counter == LIMIT)  {
           alert("You have reached the LIMIT of adding " + counter + " inputs");
      }
      else {
-          var newdiv = document.createElement('div');
+          let newdiv = document.createElement('div');
+          
           counter++;
+          
           id = "tweetText"+counter;
-          newdiv.innerHTML = " <div> <input type='text' id='"+id+"' name='myInputs[]' > <input type='button' value='-' class='lessBtn' onClick='removeInput();'> </div>";
+
+          let input = document.createElement("input");
+          input.type = "text";
+          input.id = id;
+          input.name = "myInputs[]";
+          
+          newdiv.appendChild(input);
+          input.addEventListener("keyup", f => { checkField(id); });
+
+        
+
+          let btn = document.createElement("input");
+          btn.type = "button";
+          btn.value = "-";
+          newdiv.appendChild(btn);
+          btn.className = "lessBtn";
+          btn.addEventListener("click",removeInput);
+          
+
+          
+          //newdiv.innerHTML = " <div> <input type='text' id='"+id+"' name='myInputs[]' onkeyup='checkField(' " +id+" ');'> <input type='button' value='-' class='lessBtn' onClick='removeInput();'> </div>";
           document.getElementById(divName).appendChild(newdiv);
 
      }
 }
 
+/**
+ * Supression d'un input text au formulaire
+ */
 function removeInput(){
   var remove = document.getElementById('tweet-text');
   remove.removeChild(remove.lastElementChild);
   counter--;
 }
 
+/**
+ * Filtrage des pays 
+ */
 function filter_countries() {
   let input = document.getElementById("search_country");
   let ul_checkboxes = document.getElementById("country_checkbox_list")
@@ -667,7 +764,8 @@ function filter_countries() {
   for( i = 0; i < li.length; i++){
     let label = li[i].getElementsByTagName("label")[0];
     
-    if(label.textContent.toUpperCase().indexOf(input.value.toUpperCase()) > -1){
+    // Si le pays cherche se trouve dans le tableau
+    if(label.textContent.toUpperCase().indexOf(input.value.toUpperCase()) > -1){ // Note: indexOf retourne l'index de l'element et -1 si l'element n'est pas present
       li[i].style.display = "";
     } else{
       li[i].style.display = "none";

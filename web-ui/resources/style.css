@@ -22,6 +22,40 @@ header p {
     text-align: left;
     padding: 30px;
 }
+
+.loader {
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 16px solid #3498db;
+    width: 120px;
+    height: 120px;
+    -webkit-animation: spin 2s linear infinite; /* Safari */
+    animation: spin 2s linear infinite;
+}
+
+#mainLoader {
+    right: 50%;
+    display: none;
+    position: fixed;
+    top: 40%;
+    z-index: 4;
+}
+
+#overlay {
+    position: fixed;
+    display: none;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 1;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 3;
+    cursor: pointer;
+  }
+
 #resultats {
     float: right;
 }
@@ -129,6 +163,12 @@ input[type=text]:focus {
     transform: scale(1);
 }
 
+
+#country_checkboxes input[type="checkbox"]:hover{
+    cursor: pointer;
+}
+
+
 .layout{
     display: grid;
     grid-template-rows: 50px 1fr;
@@ -214,6 +254,7 @@ input[type="radio"] + .page{
 input[type="radio"]:checked + .page{
     transform: translateX(0%);
 }
+
 .page-contents > *{
     opacity: 1;
     transform: translateY(0px);
@@ -254,9 +295,9 @@ footer{
 
 #pagination {
     width: 15%;
-    position: absolute;
-    left: 50%;
-    top: 20%;
+    margin: auto;
+    position: sticky;
+    
     display: inline-block;
 
     text-align: center;

@@ -13,6 +13,8 @@
     <body onload="load()">
         <header>
             <p> Tweet Map - Projet M1 ISD </p>
+            <div class="loader" id="mainLoader"></div>
+            <div id="overlay"></div>
         </header>
             
         <!-- Formulaire de filtre des tweets -->
@@ -23,8 +25,9 @@
             Rechercher un tweet contenant:
             <br>
             <div id="tweet-text">
-                <input type="text" id="tweetText1" class="tweetText" onkeyup="checkField('tweetText1')"/>
-                <input type="button" value="+" class="plusBtn" onClick="addInput('tweet-text');">
+                <input type="text" placeholder="Text"  id="tweetText1" class="tweetText" onkeyup="checkField('1')" title="I'm ok with this"/>
+                
+                <!-- <input type="button" value="+" class="plusBtn" onClick="addInput('tweet-text');"> Bug ID: 01-->
            </div>
             <br>
 
@@ -64,7 +67,13 @@
             <input name="nav" type="radio" class="nav list-radio" id="list" checked="checked"/>
             <div class="page list-page">
                 <div class="page-contents">
+                    <div id="pagination">
+                        <a href="#" id="la" onclick="prevPage()"><</a>
+                        <span id = "pg"></span>
+                        <a href="#" id="ra" onclick="nextPage()">></a>
+                    </div>
                     <div id="tweetList">
+                        
                         <p>No data</p>
                     </div>
                 </div>
@@ -122,12 +131,6 @@
                 </div>
                 <br>
             </div>
-            <div id="pagination">
-                <a href="#" id="la" onclick="prevPage()"><</a>
-                <span id = "pg"></span>
-                <a href="#" id="ra" onclick="nextPage()">></a>
-            </div>
-
         </footer>
     </body>
 </html>

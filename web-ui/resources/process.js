@@ -53,7 +53,8 @@ let get_query_functions = [
  * Retourne l'ensemble une String reunissant l'ensemble des requettes
  */
 function get_query() {
-  let queries = get_query_functions.map(f => f());
+  // On execute les fontions et on filtre les elements nuls
+  let queries = get_query_functions.map(f => f()).filter( e => e != "");
 
   return queries.join("&");
 }
@@ -71,7 +72,9 @@ function apply_filter() {
   // Requette de filtre au serveur
   let xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
+    loadingStart();
     if (this.readyState == 4 && this.status == 200) {
+      loadingEnd();
       let res = JSON.parse(this.responseText);
       
       globalData = res;
@@ -122,6 +125,7 @@ function apply_filter() {
   xhttp.ontimeout = () => {
     console.error('Error: Request Timeout.')
     alert("Error: Request Timeout");
+    loadingEnd();
   };
 
   xhttp.send();
@@ -147,7 +151,7 @@ function get_text_query() {
 
    query.push("user_name="+un.value);
    query.push("hashtag="+hash.value);
-
+   console.log(query);
    return query.join("&");
 }
 
@@ -191,7 +195,7 @@ function get_publication_date_query(){
 
   query.push("minDate="+minDate);
   query.push("maxDate="+maxDate);
-
+  console.log(query);
   return query.join("&");
 }
 
@@ -223,13 +227,17 @@ function get_country_query() {
  */
 function checkField(id) {
   console.log(id);
-  let field = document.getElementById(id);
+  let field = document.getElementById("tweetText"+id);
+  
+  //let toolTip = document.getElementById("toolTip"+id);
 
   // Si on trouve & on alerte l'utilisateur
   if(field.value.includes("&")){
-    field.style.boxShadow = "0px 5px 10px yellow";
+    field.style.boxShadow = "0px 0px 5px red";
+    field.title = "Please don't.";
   } else {
     field.style.boxShadow = "0px 5px 10px grey";
+    field.title = "I'm ok with this";
   }
 }
 
@@ -459,7 +467,8 @@ function hist(jsonData,columnName,width,height) {
       dict[columnValue] += 1; // On incremente
     }
   });
-  
+  if(dict.hasOwnProperty("null")) { delete dict["null"]}
+
   // Dessin des rectangles suivant la taille des canvas
   context.beginPath();
 
@@ -500,7 +509,7 @@ function hist(jsonData,columnName,width,height) {
     context.save();
     // On decale le context mettant les origines en bas du graph et on laisse de la place pour ecrire la clef
     context.translate(x+(rectWidth/2), yOrigin + rectMaxHeight + 5);
-    console.log("length",key,":",key.toString().length);
+    //console.log("length",key,":",key.toString().length);
     // On tourne
     context.rotate(Math.PI/2);
     // On ecrit le text
@@ -533,7 +542,6 @@ function clearDiv(div) {
   }
   console.log("End clearing");
 }
-
 
 
 /**
@@ -575,6 +583,9 @@ function drawPie(jsonData, columnName , width, height) {
       dict[columnValue] += 1;
     }
   });
+  
+  // Supression de la clef null
+  if(dict.hasOwnProperty("null")) { delete dict["null"]}
 
   // Fonction de calcul de la somme des valeurs d'un dictionnaire
   let valuesSumOfDict = Object.keys(dict).reduce(( (acc,cur) => dict[cur] + acc),0)  
@@ -597,8 +608,6 @@ function drawPie(jsonData, columnName , width, height) {
 
   for(key in dict){ // Pour chaques elements du dict
 
-    console.log(dict[key]);
-  
     // Un cercle etant d'angle 2pi, on effectue un produit en croix afin de connaitre l'angle de notre valeur
     let angle = Math.PI * (dict[key] * 2 / valuesSumOfDict); 
   
@@ -616,7 +625,7 @@ function drawPie(jsonData, columnName , width, height) {
     // On change de couleur
     context.beginPath();
     context.fillStyle = colors[i%colors.length];
-    console.log(context.fillStyle);
+    //console.log(context.fillStyle);
 
     // On dessine la part
     context.moveTo(xCenter + offsetX, yCenter + offsetY);
@@ -708,39 +717,47 @@ function mercatorXY(width,height,longitude,latitude) {
  * @param {*} divName 
  */
 function addInput(divName){
-     if (counter == LIMIT)  {
-          alert("You have reached the LIMIT of adding " + counter + " inputs");
-     }
-     else {
-          let newdiv = document.createElement('div');
-          
-          counter++;
-          
-          id = "tweetText"+counter;
+  if (counter == LIMIT)  {
+    alert("You have reached the LIMIT of adding " + counter + " inputs");
+  }
+  else {
+    let newdiv = document.createElement('div');
 
-          let input = document.createElement("input");
-          input.type = "text";
-          input.id = id;
-          input.name = "myInputs[]";
-          
-          newdiv.appendChild(input);
-          input.addEventListener("keyup", f => { checkField(id); });
+    counter++;
 
-        
+    textInputid = "tweetText"+counter;
+    let input = document.createElement("input");
+    input.type = "text";
+    input.id = textInputid;
+    input.name = "myInputs[]";
 
-          let btn = document.createElement("input");
-          btn.type = "button";
-          btn.value = "-";
-          newdiv.appendChild(btn);
-          btn.className = "lessBtn";
-          btn.addEventListener("click",removeInput);
-          
+    newdiv.appendChild(input);
+    input.addEventListener("keyup", f => { checkField(counter); });
 
-          
-          //newdiv.innerHTML = " <div> <input type='text' id='"+id+"' name='myInputs[]' onkeyup='checkField(' " +id+" ');'> <input type='button' value='-' class='lessBtn' onClick='removeInput();'> </div>";
-          document.getElementById(divName).appendChild(newdiv);
+    let btn = document.createElement("input");
+    btn.type = "button";
+    btn.value = "-";
+    newdiv.appendChild(btn);
+    btn.className = "lessBtn";
+    btn.addEventListener("click",removeInput);
+    
+    /**
+    let tooltipId = "toolTip"+id;
 
-     }
+    let tooltip = document.createElement("div");
+    tooltip.className = "tooltip";
+    tooltip.id = tooltipId;
+    let tooltipText = document.createElement("span");
+    tooltipText.className = "tooltiptext";
+    tooltipText.value = "Invalid character";
+
+    tooltip.appendChild(tooltipText);
+
+    field.appendChild(tooltip);
+   */
+    document.getElementById(divName).appendChild(newdiv);
+
+  }
 }
 
 /**
@@ -771,4 +788,16 @@ function filter_countries() {
       li[i].style.display = "none";
     }
   }
+}
+
+
+/** loading */
+function loadingStart() {
+  document.getElementById("overlay").style.display = "block";
+  document.getElementById("mainLoader").style.display = "block";
+}
+
+function loadingEnd() {
+  document.getElementById("overlay").style.display = "none";
+  document.getElementById("mainLoader").style.display = "none";
 }

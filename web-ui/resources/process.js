@@ -94,7 +94,7 @@ function apply_filter() {
       let histDiv = document.getElementById("hist");
       clearDiv(histDiv);
 
-      histDiv.appendChild(hist(res,"place_country",600,500)); // Histograme sur les pays
+      histDiv.appendChild(hist(res,"place_country",750,600)); // Histograme sur les pays
       console.log("--- Fin histogramme ---");
 
       // Creation et affichage du diagramme camembert
@@ -486,7 +486,7 @@ function hist(jsonData,columnName,width,height) {
   let x = 20;
   
   let yOrigin = 40; // Le y origine qui servira de repere
-  let rectMaxHeight = (canva.height -100); // La taille maximale d'un rectangle
+  let rectMaxHeight = (canva.height -150); // La taille maximale d'un rectangle
   let rectWidth = (canva.width - 100) / size_dict(dictionnaire); // La largeur maximale d'un rectangle defini par le nombre d'entrees dans le dictionnaire
 
   
@@ -513,6 +513,7 @@ function hist(jsonData,columnName,width,height) {
     
     // On ecrit le nombre d'occurences
     context.fillStyle = "black";
+    context.font = "16px Georgia";
     context.fillText(dictionnaire[key],x,yOrigin + rectMaxHeight-number-5);
     
     // / / Nom de la clef ecrit suivant une rotation 

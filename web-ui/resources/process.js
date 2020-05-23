@@ -556,6 +556,11 @@ function clearDiv(div) {
  * @param {*} width La largeur du canvas
  * @param {*} height La hauteur du canvas
  */
+function getSortedKeys(obj) {
+    var keys = keys = Object.keys(obj);
+    return keys.sort(function(a,b){return obj[b]-obj[a]});
+}
+
 function drawPie(jsonData, columnName , width, height) {
   
   let canva = document.createElement("canvas");
@@ -586,12 +591,20 @@ function drawPie(jsonData, columnName , width, height) {
       dict[columnValue] += 1;
     }
   });
+
+  k = getSortedKeys(dict).slice(0,6);
+  dictionnaire = {};
+  k.forEach(element => {
+    dictionnaire[element] = dict[element]
+  });
   
+
+
   // Supression de la clef null
-  if(dict.hasOwnProperty("null")) { delete dict["null"]}
+  if(dictionnaire.hasOwnProperty("null")) { delete dictionnaire["null"]}
 
   // Fonction de calcul de la somme des valeurs d'un dictionnaire
-  let valuesSumOfDict = Object.keys(dict).reduce(( (acc,cur) => dict[cur] + acc),0)  
+  let valuesSumOfDict = Object.keys(dictionnaire).reduce(( (acc,cur) => dictionnaire[cur] + acc),0)  
   
   // Variable d'angle
   let beginAngle = 0;
@@ -609,10 +622,10 @@ function drawPie(jsonData, columnName , width, height) {
 
   let i = 0;
 
-  for(key in dict){ // Pour chaques elements du dict
+  for(key in dictionnaire){ // Pour chaques elements du dict
 
     // Un cercle etant d'angle 2pi, on effectue un produit en croix afin de connaitre l'angle de notre valeur
-    let angle = Math.PI * (dict[key] * 2 / valuesSumOfDict); 
+    let angle = Math.PI * (dictionnaire[key] * 2 / valuesSumOfDict); 
   
     beginAngle = endAngle;
 

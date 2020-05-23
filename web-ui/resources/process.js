@@ -470,7 +470,15 @@ function hist(jsonData,columnName,width,height) {
       dict[columnValue] += 1; // On incremente
     }
   });
-  if(dict.hasOwnProperty("null")) { delete dict["null"]}
+
+
+  k = getSortedKeys(dict).slice(0,10);
+  dictionnaire = {};
+  k.forEach(element => {
+    dictionnaire[element] = dict[element]
+  });
+  
+  if(dictionnaire.hasOwnProperty("null")) { delete dictionnaire["null"]}
 
   // Dessin des rectangles suivant la taille des canvas
   context.beginPath();
@@ -479,12 +487,12 @@ function hist(jsonData,columnName,width,height) {
   
   let yOrigin = 40; // Le y origine qui servira de repere
   let rectMaxHeight = (canva.height -100); // La taille maximale d'un rectangle
-  let rectWidth = (canva.width - 100) / size_dict(dict); // La largeur maximale d'un rectangle defini par le nombre d'entrees dans le dictionnaire
+  let rectWidth = (canva.width - 100) / size_dict(dictionnaire); // La largeur maximale d'un rectangle defini par le nombre d'entrees dans le dictionnaire
 
   
   // Fonction de recuperation de la valeur maximale du dictionnaire
   // ex: { "France": 12, "Espagne":23 } -> maxOfDict retourne 23
-  let  maxDict = maxOfDict(dict);  
+  let  maxDict = maxOfDict(dictionnaire);  
   
   
   let yRatio = rectMaxHeight / maxDict; // Definition du ratio que vaut 1 "point" afin de calculer la hauteur du rectangle dans le canvas
@@ -493,8 +501,8 @@ function hist(jsonData,columnName,width,height) {
 
   let i = 0;
   // Pour chaque clefs dans le dictionnaire
-  for(key in dict){
-    number = dict[key] * yRatio; 
+  for(key in dictionnaire){
+    number = dictionnaire[key] * yRatio; 
     
     // On dessine le rectangle correspondant
     //rect(x:, y: on part de l'origine, on ajoute la difference entre la taille max et la valeur du nombre d'occurence, xWidth, yHeigth)
@@ -505,7 +513,7 @@ function hist(jsonData,columnName,width,height) {
     
     // On ecrit le nombre d'occurences
     context.fillStyle = "black";
-    context.fillText(dict[key],x,yOrigin + rectMaxHeight-number-5);
+    context.fillText(dictionnaire[key],x,yOrigin + rectMaxHeight-number-5);
     
     // / / Nom de la clef ecrit suivant une rotation 
     // On sauvegarde le contexte actuel

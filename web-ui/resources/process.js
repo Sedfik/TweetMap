@@ -110,7 +110,7 @@ function apply_filter() {
       clearDiv(mapDiv);
       
       console.log("div dim",mapDiv.clientWidth);
-      let mapCanva = drawMap(res,1000,500);
+      let mapCanva = drawMap(res);
       
       mapDiv.appendChild(mapCanva);
 
@@ -145,7 +145,7 @@ function get_text_query() {
      
    }
 
-   // Recuperation du champs du userName
+   // Recuperation du champs du userName et hashtag
    let un = document.getElementById("userName");
    let hash = document.getElementById("hashtag");
 
@@ -178,11 +178,11 @@ function get_followers_query(){
 }
 
 /**
- * Fonction de recuperation des champs de date 
+ * Fonction de recuperation des champs de dates de publication des tweets
  */
 function get_publication_date_query(){
   let query = [];
-  // Recuperation des champs de nombre d'abonnés
+
   let minDate = document.getElementById("minDate").value;
   let maxDate = document.getElementById("maxDate").value;
   let tmp = 0;
@@ -256,7 +256,6 @@ function tweetList(p,TweetPerPage) {
   bigDiv.classList.add("grid-container");
       
   // Fonction de remplissage de list
-  // 15 c'est le nombre de tweets que j'affiche par page
   for (let i = TweetPerPage * p; (i < (p+1) * TweetPerPage) && (i < globalData.length) ;i++){
 
     let cell = document.createElement("div");
@@ -266,6 +265,7 @@ function tweetList(p,TweetPerPage) {
     let userName = globalData[i]["user_name"];
     let text = globalData[i]["text"];
 
+    //création et remplissage du div
     let content =  document.createElement("div");
     content.classList.add("interiorContent")
     content.innerHTML += '<p> <i style="font-size:16px " class="fa">&#xf099;</i> <strong>' 
@@ -286,7 +286,7 @@ function tweetList(p,TweetPerPage) {
 }
 
 /**
- * Affichage des tweets suivant la page 
+ * control sur la pagination
  */
 function pageVisibility() {
   //affichage de la pagination si le contenu est suffisant
@@ -297,11 +297,13 @@ function pageVisibility() {
     console.log(document.getElementById("pagination").style.display);
   }
   else{
+    //pagination invisible
     document.getElementById("pagination").style.display = "none";
   }
 
   //premiére page 
   if (page == 0 ) {
+    // rendre la page précedente non clickable
     var leftArrow = document.getElementById("la");
     leftArrow.classList.add("nonClickable");
     leftArrow.style.color = "grey";
@@ -309,6 +311,7 @@ function pageVisibility() {
 
   //derniére page 
   if ((page+1) * 15 > globalData.length) {
+    // rendre la page suivante non clickable
     var rightArrow = document.getElementById("ra");
     rightArrow.classList.add("nonClickable");
     rightArrow.style.color = "grey";   
@@ -659,16 +662,16 @@ function size_dict(d){c=0; for (i in d) ++c; return c}
  * @param {*} width     la largeur du canvas
  * @param {*} height    la hauteur du canvas
  */
-function drawMap(jsonData, width, height) {
+function drawMap(jsonData) {
+  // Ajout de l'image au canvas
+  image = new Image;
+  image.src = 'world_map.png';
+
   // Initialisation du canvas
   let canva = document.createElement("canvas");
-  canva.width = width;
-  canva.height = height;
+  canva.width = 3389*0.27;
+  canva.height = 2537*0.27;
   let context = canva.getContext("2d");
-
-  // Ajout de l'image au canvas
-  image = new Image();
-  image.src = 'world_map.png';
 
   image.onload = function () { // Une fois l'image chargee, on l'affiche et fait le traitement
     console.log("drawImage")
@@ -680,15 +683,19 @@ function drawMap(jsonData, width, height) {
       //console.log(element['longitude'],":",element['latitude']);
       
       // Calcul des coordonnes x,y suivant la longitude et latitude ainsi que la taille du canvas
-      let coor = mercatorXY(width,height,element['longitude'],element['latitude']);
+      let coor = mercatorXY(canva.width,canva.height,element['longitude'],element['latitude']);
       
       // coor = [x,y]
       //console.log(coor);
 
       // On dessine un cercle
       context.beginPath();
-      context.arc(coor[0],coor[1],2,0, 2 * Math.PI);
-      context.stroke();
+      context.arc(coor[0],coor[1],1,0, 2 * Math.PI);
+      context.fillStyle='#205099';
+      context.fill();
+      context.lineWidth = 0.5;
+      context.strokeStyle = "";
+      context.stroke(); 
     });
   }
   return canva;   
@@ -706,8 +713,8 @@ function mercatorXY(width,height,longitude,latitude) {
   let radLatitude = latitude * Math.PI /180; // Transformation du degree en radian
   let y;
 
-  x = width * ((longitude + 180)/360);
-  y = (height/2) - ( (width/(2*Math.PI)) * ( Math.log( Math.tan( Math.PI/4 + radLatitude/2 ))));
+  x = width * ((longitude + 180 -10)/360);
+  y = (height/2) - ( (width/(2*Math.PI)) * ( Math.log( Math.tan( Math.PI/4 + radLatitude/2 )))) ;
   
   return [x,y];
 }

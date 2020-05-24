@@ -13,6 +13,8 @@ class TweetHandler(http.server.SimpleHTTPRequestHandler):
     
     # Reception d'un GET
     def do_GET(self):
+        #cur_thread = threading.current_thread()
+        #print(cur_thread.name)
 
         log.debug("Tweet file:"+str(TWEET_FILE_TO_SERVE))
         

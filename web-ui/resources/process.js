@@ -694,8 +694,8 @@ function drawMap(jsonData) {
 
   // Initialisation du canvas
   let canva = document.createElement("canvas");
-  canva.width = 3389*0.27;
-  canva.height = 2537*0.27;
+  canva.width = 3389*0.275;
+  canva.height = 2537*0.275;
   let context = canva.getContext("2d");
 
   image.onload = function () { // Une fois l'image chargee, on l'affiche et fait le traitement
@@ -719,7 +719,6 @@ function drawMap(jsonData) {
       context.fillStyle='#205099';
       context.fill();
       context.lineWidth = 0.5;
-      context.strokeStyle = "";
       context.stroke(); 
     });
   }

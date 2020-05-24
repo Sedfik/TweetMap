@@ -12,7 +12,7 @@ os.chdir(resources)
 class ThreadingSimpleServer(ThreadingMixIn, HTTPServer):
     pass
 
-# le serveur lance un nouveau thread pour chaque appel au handler
+# le serveur lance un nouveau thread pour chaque nouvelle requete
 server = ThreadingSimpleServer(("",PORT),TweetHandler)
 print("serving at port", PORT)
 try:

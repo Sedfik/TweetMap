@@ -671,7 +671,10 @@ function drawPie(jsonData, columnName , width, height) {
 
     i++;
   }
-  
+  let title = document.createElement("p");
+  title.innerHTML = "TOP 5 des Hashtag";
+  title.style.zIndex = 2;
+  canva.appendChild(title);
   return canva;
 }
 

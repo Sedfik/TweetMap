@@ -4,7 +4,7 @@ import time
 
 
 
-links = ['http://localhost:8800/tweets?text=dog']*100
+links = ['http://localhost:8800/tweets?text=dog']*500
 
 start_time = time.time()
 with PoolExecutor(max_workers=20) as executor:

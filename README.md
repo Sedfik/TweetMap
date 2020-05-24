@@ -11,7 +11,7 @@ Rapport : https://hackmd.io/@hq2HsYHdQOSdIMj7T_-Gsg/HyEqtm4oU
 - [x] Automatisation des test via Travis
 - [ ] Gestion de sessions multiple (multithreading) - 2 POINTS
 - [ ] Absence de TIMEOUT .... - 2 POINTS
-- [ ] Réfractor -> fonction de filtre prenant en parametre le fichier de tweets ?
+- [x] Réfractor -> fonction de filtre prenant en parametre le fichier de tweets ?
 - [ ] Vérification des champs envoyé par l'utilisateur 
 
 ### Côté client 
@@ -19,7 +19,7 @@ Rapport : https://hackmd.io/@hq2HsYHdQOSdIMj7T_-Gsg/HyEqtm4oU
 - [x] Requête en AJAX simple
 - [x] Premier formulaire de filtrage
 - [x] Afficher les résultat en brut
-- [ ] Recherches avancées - 2 POINTS
+- [x] Recherches avancées - 2 POINTS
 ### Features
 - [x] Déploiement sous docker
 - [x] Utilisation de Travis 

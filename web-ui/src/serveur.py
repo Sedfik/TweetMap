@@ -2,7 +2,7 @@ import http.server
 import socketserver
 import os
 import handler
-PORT = 8800 # Can be changed
+PORT = 8800
 
 class tweetServer(socketserver.TCPServer):
 
